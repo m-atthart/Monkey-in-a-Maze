@@ -10,13 +10,13 @@ class Player:
         self.topIsWall = topWall
         self.rightIsWall = rightWall
     def checkWalls(self, pos):
-        if pos[i-1][j].isWall == True: #checks if top is wall
+        if pos[i-1][j].isWall: #checks if top is wall
             self.topIsWall = True
-        if pos[i][j+1].isWall == True: #checks if right is wall
+        if pos[i][j+1].isWall: #checks if right is wall
             self.rightIsWall = True
     def move_up(space):
-        if space.pos(matrix[i-1][j]).isWall == False:
-            matrix[i][j], matrix[i-1][j] = matrix[i-1][j], matrix[i][j]
+        if not self.topIsWall:
+            self.pos = matrix[i+1][j]
             map.refreshMap
         else:
             print("you can't go that way")
@@ -34,7 +34,7 @@ player.checkWalls()
 options = ""
 if player.topIsWall == False:
     options += "Press up to go up\n"
-move = input(options)
+move = input(options)d
 if move == "up":
     player.move_up(space)
 
@@ -42,6 +42,7 @@ map =d
 [[-, -, x],
 [x, P, x],
 [x, -, x]]
+
 
 #flawlessmode = spaces behind you turn into walls
 #flashlightmode = can only see 4x4 around you
