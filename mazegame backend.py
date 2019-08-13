@@ -1,79 +1,22 @@
 import time
-import asyncio
+#import asyncio
 
 
 class Space:
-    def __init__(self, pos = False, wall = False, coin = False):
-        self.pos = pos #matrix[i][j]
+    def __init__(self, wall = False, coin = False, player = False):
         self.isWall = wall
         self.isCoin = coin
+        self.isPlayer = player
 
     def __repr__(self):
         if self.isWall:
             return "x"
         elif self.isCoin:
             return "c"
-        #elif player.pos == self.pos:
-            #return "P"
+        elif self.isPlayer:
+            return "P"
         else:
             return "-"
-
-
-class Player:
-    def __init__(self, pos, topWall, rightWall, bottomWall, leftWall):
-        self.pos = pos
-        self.topIsWall = topWall
-        self.rightIsWall = rightWall
-        self.bottomIsWall = bottomWall
-        self.leftIsWall = leftWall
-
-    def checkWalls(self, pos):
-        if matrix[i-1][j].isWall: #checks if top is wall
-            self.topIsWall = True
-        if matrix[i][j+1].isWall: #checks if right is wall
-            self.rightIsWall = True
-        if matrix[i+1][j].isWall:
-            self.bottomIsWall = True
-        if matrix[i][j-1].isWall:
-            self.leftIsWall = True
-
-    def move_up(self, space):
-        if not self.topIsWall:
-            self.pos = matrix[i-1][j]
-            matrix[i][j] = "-" #replace old spot with empty spot
-            game_map.refreshMap
-        else:
-            print("you can't go that way")
-    def move_right(self, space):
-        if not self.rightIsWall:
-            self.pos = matrix[i][j+1]
-            matrix[i][j] = "-" #replace old spot with empty spot
-            game_map.refreshMap
-        else:
-            print("you can't go that way")
-    def move_down(self, space):
-        if not self.bottomIsWall:
-            self.pos = matrix[i+1][j]
-            matrix[i][j] = "-" #replace old spot with empty spot
-            game_map.refreshMap
-        else:
-            print("you can't go that way")
-    def move_left(self, space):
-        if not self.leftIsWall:
-            self.pos = matrix[i][j-1]
-            matrix[i][j] = "-" #replace old spot with empty spot
-            game_map.refreshMap
-        else:
-            print("you can't go that way")
-
-
-class GameLoop:
-    def __init__(self, iteration):
-        self.ITERATIONS_PER_MINUTE = iteration
-    async def onstep():
-        player.checkWalls()
-        await asyncio.sleep(60/self.ITERATIONS_PER_MINUTE)
-        onstep()
 
 
 class Map:
@@ -82,37 +25,101 @@ class Map:
         self.width = width
         self.matrix = [[Space() for i in range(width)] for j in range(height)]
     def refreshMap(self):
+        self.matrix[player.posI][player.posJ].isPlayer = True
+        print(self.matrix)
+        '''
         for i in range(len(self.matrix)):
             for j in range(len(self.matrix[i])):
                 if self.isWall:
                     matrix[i][j] = "x"
                 elif self.isCoin:
                     matrix[i][j] = "c"
-                elif player.pos == self.pos:
+                elif self.isPlayer:
                     matrix[i][j] = "P"
                 else:
                     matrix[i][j] = "-"
+                '''
 
 
-game_map = Map(4, 5)
-game_map.matrix[2][1].isWall = True
-print(game_map.matrix)
+class Player:
+    def __init__(self, posI, posJ, topWall = False, rightWall = False, bottomWall = False, leftWall = False):
+        self.posI = posI
+        self.posJ = posJ
+        self.topIsWall = topWall
+        self.rightIsWall = rightWall
+        self.bottomIsWall = bottomWall
+        self.leftIsWall = leftWall
+
+    def checkWalls(self):
+        if self.posI > 0 and game_map.matrix[self.posI-1][self.posJ].isWall: #checks if top is wall
+            self.topIsWall = True
+        if self.posJ+1 < game_map.width and game_map.matrix[self.posI][self.posJ+1].isWall:
+            self.rightIsWall = True
+        if self.posI+1 < game_map.height and game_map.matrix[self.posI+1][self.posJ].isWall:
+            self.bottomIsWall = True
+        if self.posJ > 0 and game_map.matrix[self.posI][self.posJ-1].isWall:
+            self.leftIsWall = True
+
+    def move_up(self):
+        self.checkWalls()
+        if not self.topIsWall:
+            game_map.matrix[self.posI-1][self.posJ].isPlayer = True
+            game_map.matrix[self.posI][self.posJ].isPlayer = False #moves player up one spot
+            self.posI -= 1 #changes saved position values
+        else:
+            print("you can't go that way")
+        game_map.refreshMap() #redraws map
+    def move_right(self):
+        self.checkWalls()
+        if not self.rightIsWall:
+            game_map.matrix[self.posI][self.posJ+1].isPlayer = True
+            game_map.matrix[self.posI][self.posJ].isPlayer = False
+            self.posJ += 1
+        else:
+            print("you can't go that way")
+        game_map.refreshMap()
+    def move_down(self):
+        self.checkWalls()
+        if not self.bottomIsWall:
+            game_map.matrix[self.posI+1][self.posJ].isPlayer = True
+            game_map.matrix[self.posI][self.posJ].isPlayer = False
+            self.posI += 1
+        else:
+            print("you can't go that way")
+        game_map.refreshMap()
+    def move_left(self):
+        self.checkWalls()
+        if not self.leftIsWall:
+            game_map.matrix[self.posI][self.posJ-1].isPlayer = True
+            game_map.matrix[self.posI][self.posJ].isPlayer = False
+            self.posJ -= 1
+        else:
+            print("you can't go that way")
+        game_map.refreshMap()
+
+
+
+game_map = Map(4, 5) #initialize map with height: 4 and width: 5)
+game_map.matrix[3][2].isWall = True #places a wall at index[3][2]
+player = Player(2, 1) #instantiates player at index[2][1]
+game_map.matrix[1][3].isCoin = True #places coin at index[1][3]
+game_map.refreshMap() #draws map
+player.move_down() #moves player down
+player.move_right() #tries to move player right into wall
+
+
+
+
 
 '''
-player = Player()
-
-player.checkWalls()
-options = ""
-if player.topIsWall == False:
-    options += "Press up to go up\n"
-move = input(options)
-if move == "up":
-    player.move_up(space)
-
-map =
-[["-", "-", "x"],
-["x", "P", "x"],
-["x", "-", "x"]]
+class GameLoop:
+    def __init__(self, iteration):
+        self.ITERATIONS_PER_MINUTE = iteration
+    async def onstep():
+        player.checkWalls()
+        await asyncio.sleep(60/self.ITERATIONS_PER_MINUTE)
+        Map.refreshMap()
+        onstep()
 '''
 
 #flawlessmode = spaces behind you turn into walls
