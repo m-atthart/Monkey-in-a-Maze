@@ -11,10 +11,10 @@ class Space:
     def __repr__(self):
         if self.isWall:
             return "x"
-        elif self.isCoin:
-            return "c"
         elif self.isPlayer:
             return "P"
+        elif self.isCoin:
+            return "c"
         else:
             return "-"
 
@@ -42,13 +42,14 @@ class Map:
 
 
 class Player:
-    def __init__(self, posI, posJ, topWall = False, rightWall = False, bottomWall = False, leftWall = False):
+    def __init__(self, posI, posJ, topWall = False, rightWall = False, bottomWall = False, leftWall = False, coins = 0):
         self.posI = posI
         self.posJ = posJ
         self.topIsWall = topWall
         self.rightIsWall = rightWall
         self.bottomIsWall = bottomWall
         self.leftIsWall = leftWall
+        self.coinCount = coins
 
     def checkWalls(self):
         if self.posI > 0 and game_map.matrix[self.posI-1][self.posJ].isWall: #checks if top is wall
@@ -60,6 +61,11 @@ class Player:
         if self.posJ > 0 and game_map.matrix[self.posI][self.posJ-1].isWall:
             self.leftIsWall = True
 
+    def checkCoin(self):
+        if game_map.matrix[self.posI][self.posJ].isCoin:
+            self.coinCount += 1
+            game_map.matrix[self.posI][self.posJ].isCoin = False
+
     def move_up(self):
         self.checkWalls()
         if not self.topIsWall:
@@ -68,6 +74,7 @@ class Player:
             self.posI -= 1 #changes saved position values
         else:
             print("you can't go that way")
+        self.checkCoin()
         game_map.refreshMap() #redraws map
     def move_right(self):
         self.checkWalls()
@@ -77,6 +84,7 @@ class Player:
             self.posJ += 1
         else:
             print("you can't go that way")
+        self.checkCoin()
         game_map.refreshMap()
     def move_down(self):
         self.checkWalls()
@@ -86,6 +94,7 @@ class Player:
             self.posI += 1
         else:
             print("you can't go that way")
+        self.checkCoin()
         game_map.refreshMap()
     def move_left(self):
         self.checkWalls()
@@ -95,7 +104,9 @@ class Player:
             self.posJ -= 1
         else:
             print("you can't go that way")
+        self.checkCoin()
         game_map.refreshMap()
+
 
 
 
@@ -104,9 +115,16 @@ game_map.matrix[3][2].isWall = True #places a wall at index[3][2]
 player = Player(2, 1) #instantiates player at index[2][1]
 game_map.matrix[1][3].isCoin = True #places coin at index[1][3]
 game_map.refreshMap() #draws map
-player.move_down() #moves player down
-player.move_right() #tries to move player right into wall
-
+player.move_up() #moves player up
+player.move_right()
+print("Coins: " + str(player.coinCount))
+player.move_right() #moves over coin
+print("Coins: " + str(player.coinCount)) #shows that player.coinCount gets affected
+player.move_right()
+player.move_down()
+player.move_down()
+player.move_left() #tries to move player left into wall
+player.move_left()
 
 
 
