@@ -80,5 +80,5 @@ while True:
 for t in maze:
     print(t)
 
-
+ 
 
