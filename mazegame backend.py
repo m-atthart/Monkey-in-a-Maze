@@ -19,10 +19,15 @@ class Space:
             return "-"
 
 class Coin(Space):
-    def __init__(self, pickedUp = False):
+    def __init__(self, i, j, pickedUp = False):
+        self.posI = i
+        self.posJ = j
         self.isPickedUp = pickedUp
     def __repr__(self):
-        return "c"
+        if not self.isPickedUp:
+            return "c"
+        else:
+            return "-"
 
 class Wall(Space):
     def __repr__(self):
@@ -62,19 +67,19 @@ class Player:
         self.moveCount = moves
 
     def checkWalls(self):
-        if self.posI > 0 and game_map.matrix[self.posI-1][self.posJ].isWall: #checks if top is wall
+        if self.posI > 0 and type(game_map.matrix[self.posI-1][self.posJ]) == Wall: #checks if top is wall
             self.topIsWall = True
-        if self.posJ+1 < game_map.width and game_map.matrix[self.posI][self.posJ+1].isWall:
+        if self.posJ+1 < game_map.width and type(game_map.matrix[self.posI][self.posJ+1]) == Wall:
             self.rightIsWall = True
-        if self.posI+1 < game_map.height and game_map.matrix[self.posI+1][self.posJ].isWall:
+        if self.posI+1 < game_map.height and type(game_map.matrix[self.posI+1][self.posJ]) == Wall:
             self.bottomIsWall = True
-        if self.posJ > 0 and game_map.matrix[self.posI][self.posJ-1].isWall:
+        if self.posJ > 0 and type(game_map.matrix[self.posI][self.posJ-1]) == Wall:
             self.leftIsWall = True
 
     def checkCoin(self):
-        if game_map.matrix[self.posI][self.posJ].isCoin:
+        if type(game_map.matrix[self.posI][self.posJ]) == Coin:
             self.coinCount += 1
-            game_map.matrix[self.posI][self.posJ].isCoin = False
+            game_map.matrix[self.posI][self.posJ].isPickedUp = True
 
     def move_up(self):
         self.checkWalls()
@@ -85,7 +90,7 @@ class Player:
             self.checkCoin()
             self.moveCount += 1
         else:
-            print("you can't go that way")
+            print("You can't go that way")
         game_map.refreshMap() #redraws map
     def move_right(self):
         self.checkWalls()
@@ -96,7 +101,7 @@ class Player:
             self.checkCoin()
             self.moveCount += 1
         else:
-            print("you can't go that way")
+            print("You can't go that way")
         game_map.refreshMap()
     def move_down(self):
         self.checkWalls()
@@ -107,7 +112,7 @@ class Player:
             self.checkCoin()
             self.moveCount += 1
         else:
-            print("you can't go that way")
+            print("You can't go that way")
         game_map.refreshMap()
     def move_left(self):
         self.checkWalls()
@@ -118,7 +123,7 @@ class Player:
             self.checkCoin()
             self.moveCount += 1
         else:
-            print("you can't go that way")
+            print("You can't go that way")
         game_map.refreshMap()
 
 
@@ -129,7 +134,8 @@ game_map = Map(4, 5) #initialize map with height: 4 and width: 5)
 def createWall(i, j):
     game_map.matrix[i][j].isWall = True
 def createCoin(i, j):
-    game_map.matrix[i][j].isCoin = True
+    coin = Coin(i, j)
+    game_map.matrix[i][j] = coin
 
 createWall(3, 2) #places a wall at index[3][2]
 player = Player(2, 1) #instantiates player at index[2][1]
