@@ -30,3 +30,8 @@ def iterate():
                     maze[random_i][random_j + k] = top_value_holder
     for i in maze:
         print(i)
+        
+        
+ #begin iteration
+for i in range(0, ((height*width)//4)):
+    iterate()
