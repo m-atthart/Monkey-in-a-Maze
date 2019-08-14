@@ -18,6 +18,15 @@ class Space:
         else:
             return "-"
 
+class Coin(Space):
+    def __init__(self, pickedUp = False):
+        self.isPickedUp = pickedUp
+    def __repr__(self):
+        return "c"
+
+class Wall(Space):
+    def __repr__(self):
+        return "x"
 
 class Map:
     def __init__(self, height, width):
@@ -42,7 +51,7 @@ class Map:
 
 
 class Player:
-    def __init__(self, posI, posJ, topWall = False, rightWall = False, bottomWall = False, leftWall = False, coins = 0):
+    def __init__(self, posI, posJ, topWall = False, rightWall = False, bottomWall = False, leftWall = False, coins = 0, moves = 0):
         self.posI = posI
         self.posJ = posJ
         self.topIsWall = topWall
@@ -50,6 +59,7 @@ class Player:
         self.bottomIsWall = bottomWall
         self.leftIsWall = leftWall
         self.coinCount = coins
+        self.moveCount = moves
 
     def checkWalls(self):
         if self.posI > 0 and game_map.matrix[self.posI-1][self.posJ].isWall: #checks if top is wall
@@ -72,9 +82,10 @@ class Player:
             game_map.matrix[self.posI-1][self.posJ].isPlayer = True
             game_map.matrix[self.posI][self.posJ].isPlayer = False #moves player up one spot
             self.posI -= 1 #changes saved position values
+            self.checkCoin()
+            self.moveCount += 1
         else:
             print("you can't go that way")
-        self.checkCoin()
         game_map.refreshMap() #redraws map
     def move_right(self):
         self.checkWalls()
@@ -82,9 +93,10 @@ class Player:
             game_map.matrix[self.posI][self.posJ+1].isPlayer = True
             game_map.matrix[self.posI][self.posJ].isPlayer = False
             self.posJ += 1
+            self.checkCoin()
+            self.moveCount += 1
         else:
             print("you can't go that way")
-        self.checkCoin()
         game_map.refreshMap()
     def move_down(self):
         self.checkWalls()
@@ -92,9 +104,10 @@ class Player:
             game_map.matrix[self.posI+1][self.posJ].isPlayer = True
             game_map.matrix[self.posI][self.posJ].isPlayer = False
             self.posI += 1
+            self.checkCoin()
+            self.moveCount += 1
         else:
             print("you can't go that way")
-        self.checkCoin()
         game_map.refreshMap()
     def move_left(self):
         self.checkWalls()
@@ -102,18 +115,25 @@ class Player:
             game_map.matrix[self.posI][self.posJ-1].isPlayer = True
             game_map.matrix[self.posI][self.posJ].isPlayer = False
             self.posJ -= 1
+            self.checkCoin()
+            self.moveCount += 1
         else:
             print("you can't go that way")
-        self.checkCoin()
         game_map.refreshMap()
 
 
 
 
 game_map = Map(4, 5) #initialize map with height: 4 and width: 5)
-game_map.matrix[3][2].isWall = True #places a wall at index[3][2]
+
+def createWall(i, j):
+    game_map.matrix[i][j].isWall = True
+def createCoin(i, j):
+    game_map.matrix[i][j].isCoin = True
+
+createWall(3, 2) #places a wall at index[3][2]
 player = Player(2, 1) #instantiates player at index[2][1]
-game_map.matrix[1][3].isCoin = True #places coin at index[1][3]
+createCoin(1, 3) #places coin at index[1][3]
 game_map.refreshMap() #draws map
 player.move_up() #moves player up
 player.move_right()
@@ -125,6 +145,7 @@ player.move_down()
 player.move_down()
 player.move_left() #tries to move player left into wall
 player.move_left()
+print("Moves: " + str(player.moveCount))
 
 
 
@@ -146,3 +167,13 @@ class GameLoop:
 #timedmode = timer
 #zenmode = no coins, no time
 #dontstopmode = stop moving for 2 seconds -> lose
+
+
+"""
+TODO
+
+-make coin/wall subclasses
+-player move counter
+-coin to coin that has been picked up, not class change
+
+"""
