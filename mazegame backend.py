@@ -3,9 +3,10 @@ import time
 
 
 class Space:
-    def __init__(self, wall = False, coin = False, player = False):
+    def __init__(self, i = 0, j = 0, player = False):
+        self.posI = i
+        self.posJ = j
         self.isPlayer = player
-
     def __repr__(self):
         if self.isPlayer:
             return "P"
@@ -38,7 +39,19 @@ class Map:
         self.height = height
         self.width = width
         self.matrix = [[Space() for i in range(width)] for j in range(height)]
-    def refreshMap(self):
+    def snapshotMap(self):
+        playerpos = [[player.posI, player.posJ]]
+        coins = [[]]
+        walls = [[]]
+        for i in range(self.height):
+            for j in range(self.width):
+                if type(self.matrix[i][j]) == Wall:
+                    walls[0].append([i, j])
+                elif type(self.matrix[i][j]) == Coin:
+                    if not self.matrix[i][j].isPickedUp:
+                        coins[0].append([i, j])
+        encoding = playerpos + coins + walls
+        print(encoding)
         self.matrix[player.posI][player.posJ].isPlayer = True
         for i in range(len(self.matrix)):
             print(str(self.matrix[i]) + "\n")
@@ -67,7 +80,7 @@ class Player:
             self.leftIsWall = True
 
     def checkCoin(self):
-        if type(game_map.matrix[self.posI][self.posJ]) == Coin:
+        if type(game_map.matrix[self.posI][self.posJ]) == Coin and not game_map.matrix[self.posI][self.posJ].isPickedUp:
             self.coinCount += 1
             game_map.matrix[self.posI][self.posJ].isPickedUp = True
 
@@ -81,7 +94,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way")
-        game_map.refreshMap() #redraws map
+        game_map.snapshotMap() #redraws map
     def move_right(self):
         self.checkWalls()
         if not self.rightIsWall:
@@ -92,7 +105,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way")
-        game_map.refreshMap()
+        game_map.snapshotMap()
     def move_down(self):
         self.checkWalls()
         if not self.bottomIsWall:
@@ -103,7 +116,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way")
-        game_map.refreshMap()
+        game_map.snapshotMap()
     def move_left(self):
         self.checkWalls()
         if not self.leftIsWall:
@@ -114,7 +127,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way")
-        game_map.refreshMap()
+        game_map.snapshotMap()
 
 
 
@@ -130,7 +143,7 @@ createWall(3, 2) #places a wall at index[3][2]
 player = Player(2, 1) #instantiates player at index[2][1]
 createCoin(1, 3) #places coin at index[1][3]
 createCoin(2, 4)
-game_map.refreshMap() #draws map
+game_map.snapshotMap() #draws map
 player.move_up() #moves player up
 player.move_right()
 print("Coins: " + str(player.coinCount))
@@ -154,7 +167,7 @@ class GameLoop:
     async def onstep():
         player.checkWalls()
         await asyncio.sleep(60/self.ITERATIONS_PER_MINUTE)
-        Map.refreshMap()
+        Map.snapshotMap()
         onstep()
 '''
 
@@ -169,8 +182,5 @@ class GameLoop:
 """
 TODO
 
--make coin/wall subclasses
--player move counter
--coin to coin that has been picked up, not class change
 
 """
