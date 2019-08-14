@@ -4,17 +4,11 @@ import time
 
 class Space:
     def __init__(self, wall = False, coin = False, player = False):
-        self.isWall = wall
-        self.isCoin = coin
         self.isPlayer = player
 
     def __repr__(self):
-        if self.isWall:
-            return "x"
-        elif self.isPlayer:
+        if self.isPlayer:
             return "P"
-        elif self.isCoin:
-            return "c"
         else:
             return "-"
 
@@ -24,14 +18,20 @@ class Coin(Space):
         self.posJ = j
         self.isPickedUp = pickedUp
     def __repr__(self):
-        if not self.isPickedUp:
+        if player.posI == self.posI and player.posJ == self.posJ:
+            return "P"
+        elif not self.isPickedUp:
             return "c"
         else:
             return "-"
 
 class Wall(Space):
+    def __init(self, i, j):
+        self.posI = i
+        self.posJ = j
     def __repr__(self):
         return "x"
+
 
 class Map:
     def __init__(self, height, width):
@@ -40,19 +40,9 @@ class Map:
         self.matrix = [[Space() for i in range(width)] for j in range(height)]
     def refreshMap(self):
         self.matrix[player.posI][player.posJ].isPlayer = True
-        print(self.matrix)
-        '''
         for i in range(len(self.matrix)):
-            for j in range(len(self.matrix[i])):
-                if self.isWall:
-                    matrix[i][j] = "x"
-                elif self.isCoin:
-                    matrix[i][j] = "c"
-                elif self.isPlayer:
-                    matrix[i][j] = "P"
-                else:
-                    matrix[i][j] = "-"
-                '''
+            print(str(self.matrix[i]) + "\n")
+        print("\n")
 
 
 class Player:
@@ -132,14 +122,14 @@ class Player:
 game_map = Map(4, 5) #initialize map with height: 4 and width: 5)
 
 def createWall(i, j):
-    game_map.matrix[i][j].isWall = True
+    game_map.matrix[i][j] = Wall(i, j)
 def createCoin(i, j):
-    coin = Coin(i, j)
-    game_map.matrix[i][j] = coin
+    game_map.matrix[i][j] = Coin(i, j)
 
 createWall(3, 2) #places a wall at index[3][2]
 player = Player(2, 1) #instantiates player at index[2][1]
 createCoin(1, 3) #places coin at index[1][3]
+createCoin(2, 4)
 game_map.refreshMap() #draws map
 player.move_up() #moves player up
 player.move_right()
@@ -148,9 +138,10 @@ player.move_right() #moves over coin
 print("Coins: " + str(player.coinCount)) #shows that player.coinCount gets affected
 player.move_right()
 player.move_down()
+print("Coins: " + str(player.coinCount))
 player.move_down()
-player.move_left() #tries to move player left into wall
 player.move_left()
+player.move_left() #tries to move player left into wall
 print("Moves: " + str(player.moveCount))
 
 
