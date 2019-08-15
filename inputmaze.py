@@ -116,7 +116,7 @@ while not done:
     if keys[K_LEFT]:
         print("left")
         # player.move_left()
- 
+
     elif keys[K_RIGHT]:
         print("right")
         # player.move_right()
