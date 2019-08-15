@@ -143,6 +143,33 @@ while not done:
                              [width * column, height * row, width, height])
 
 
+<<<<<<< HEAD
+=======
+    pygame.event.pump()
+    keys = pygame.key.get_pressed()
+    if keys[K_ESCAPE]:
+        done = True
+
+    if keys[K_LEFT]:
+        print("left")
+        # player.move_left()
+
+    elif keys[K_RIGHT]:
+        print("right")
+        # player.move_right()
+        pygame.draw.rect(screen, GREEN,
+                         [WIDTH * column, HEIGHT * row, WIDTH + 1, HEIGHT])
+    elif keys[K_UP]:
+        print("up")
+        pygame.draw.rect(screen, GREEN,
+                         [WIDTH * column, HEIGHT * row, WIDTH, HEIGHT + 1])
+
+    elif keys[K_DOWN]:
+        print("down")
+        pygame.draw.rect(screen, GREEN,
+                         [WIDTH * column, HEIGHT * row, WIDTH, HEIGHT-1])
+
+>>>>>>> ca10180c2dac0a06ca39e5fa945ec4050e3592f0
     # Limit to 60 frames per second
     clock.tick(10)
 

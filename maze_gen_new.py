@@ -12,21 +12,26 @@ for i in range(height):
         count += 1
     maze.append(row)
 
-#finding the values attached to the odd index numbers in i and j direction
-# and turning them into a wall by replacing them with a zero
-open_counter=1
+for t in maze:
+    print(t)
 
+#first if
+#finding the values attached to the indexes with odd numbers in an even row and turning them into a wall by replacing them with a zero
+#second if
+#finding the values attached to the odd rows and turning them into a wall by replacing them with a zero
+#only the values attached to even indexes in both i(vertical) an j(horizontal) direction stay numbered
+
+open_counter=1
 for num1 in range(height):
     for num2 in range(width):
-        if num1 % 2 == 1:
+        if num1 % 2 == 0:
             if num2 % 2 == 1:
                 maze[num1][num2] = 0
-        if num2 % 2 == 1:
+        if num1 % 2 == 1:
             maze[num1][num2] = 0
 
-print(maze)
-
-
+for t in maze:
+    print(t)
 
 
 
