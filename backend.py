@@ -60,7 +60,7 @@ class Map:
 
 
 class Player:
-    def __init__(self, posI = 0, posJ = 0, topWall = False, rightWall = False, bottomWall = False, leftWall = False, coins = 0, moves = 0):
+    def __init__(self, posI, posJ, topWall = False, rightWall = False, bottomWall = False, leftWall = False, coins = 0, moves = 0):
         self.posI = posI
         self.posJ = posJ
         self.topIsWall = topWall #boolean. if space above is of type wall
@@ -80,6 +80,15 @@ class Player:
             self.bottomIsWall = True
         if self.posJ > 0 and type(game_map.matrix[self.posI][self.posJ-1]) == Wall:
             self.leftIsWall = True
+        if type(game_map.matrix[self.posI-1][self.posJ]) != Wall:
+            self.topIsWall = False
+        if type(game_map.matrix[self.posI][self.posJ+1]) != Wall:
+            self.rightIsWall = False
+        if type(game_map.matrix[self.posI+1][self.posJ]) != Wall:
+            self.bottomIsWall = False
+        if type(game_map.matrix[self.posI][self.posJ-1]) != Wall:
+            self.leftIsWall = False
+
     def checkCoin(self): #checks if current space is of type coin
         if type(game_map.matrix[self.posI][self.posJ]) == Coin and not game_map.matrix[self.posI][self.posJ].isPickedUp:
             self.coinCount += 1
@@ -141,13 +150,15 @@ class Player:
 
 
 #example game
-game_map = Map(4, 5) #initialize map with height: 4 and width: 5
+game_map = Map(10, 10) #initialize map with height: 4 and width: 5
 player = Player(2, 1) #instantiates player at index[2][1]
 game_map.createWall(3, 2) #places a wall at index[3][2]
 game_map.createWall(0, 0)
 game_map.createCoin(1, 3) #places coin at index[1][3]
 game_map.createCoin(2, 4)
+
 print(game_map.snapshotMap()) #prints encoding of map
+'''
 game_map.printMap() #prints map to console
 player.move_up() #moves player up
 player.move_right()
@@ -161,3 +172,4 @@ player.move_down()
 player.move_left()
 player.move_left() #tries to move player left into wall
 print("Moves: " + str(player.moveCount)) #shows final successful move count
+'''
