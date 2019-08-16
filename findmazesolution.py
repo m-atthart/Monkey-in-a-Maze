@@ -2,19 +2,9 @@
 import queue
 mainq = queue.Queue()
 mainq.put("1,1,0")
-width = len(maze[0])
-height = len(maze)
 distance = 0
 
-altMaze = [[-1] * (width + 2) for i in range(height + 2)]
-for i in range(1,height+1):
-    for j in range(1,width+1):
-        altMaze[i][j] = maze[i-1][j-1]
 
-maze = altMaze
-width = len(maze[0])
-height = len(maze)
-distance = 0
 
 
 
@@ -24,18 +14,22 @@ def checkAdjacent(i, j):
         holderstring = str(i+1) + "," + str(j) + "," +str(distance)
         mainq.put(holderstring)
         print(holderstring)
+        self.move_down
     if i-1 > -1 and maze[i-1][j] == 0:
         holderstring = str(i-1) + "," + str(j) + "," +str(distance)
         print(holderstring)
         mainq.put(holderstring)
+        self.move_up
     if j+1 < width and maze[i][j+1] == 0:
         holderstring = str(i) + "," + str(j+1) + "," +str(distance)
         print(holderstring)
         mainq.put(holderstring)
+        self.move_right
     if j-1 > -1 and maze[i][j-1] == 0:
         holderstring = str(i) + "," + str(j-1) + "," +str(distance)
         print(holderstring)
         mainq.put(holderstring)
+        self.move_left
 
 holder_removed_from_que = ""
 holder_i = 0
@@ -43,7 +37,7 @@ holder_j = 0
 
 while True:
         #check if the queue is empty, if it is, there are no solutions anymore, print message
-    if holder_i == 5 and holder_j == 4:
+    if holder_i == 0 and holder_j == width:
         solution = True
         print("The solution is found!")
         break
@@ -68,5 +62,3 @@ while True:
     #now set it back to a wall if it's passed
     maze[holder_i][holder_j] = distance
 
-for t in maze:
-    print(t)
