@@ -14,11 +14,11 @@ WHITE = (255, 255, 255)
 BROWN = (222, 184, 135)
 GREEN = (107, 142, 35)
 BLUE = (135, 206, 250)
-YELLOW = (255, 255, 0)
+YELLOW = (255, 215, 0)
 
 # grid size
-HEIGHT = 2 * random.randint(3,9) + 1
-WIDTH = HEIGHT + 2 * random.randint(1,3)
+HEIGHT = 2 * random.randint(5,11) + 1
+WIDTH = HEIGHT + 2 * random.randint(2,5)
 
 # sets margin
 MARGIN = 12
@@ -36,6 +36,28 @@ def init_window_size(maze, margin, cell_width, cell_height):
 
 
 def draw_maze(grid, screen, cell_height, cell_width, margin):
+    def draw_wall(row, column, color):
+        pygame.draw.rect(screen, color,
+                         [margin + cell_width * column,
+                          margin + cell_height * row,
+                          cell_width, cell_height])
+    def draw_void(row, column, color):
+        draw_wall(row, column, color)
+
+    def draw_finish(row, column, color):
+        draw_wall(row, column, color)
+
+    def draw_player(row, column, color):
+        pygame.draw.rect(screen, WHITE,
+                         [margin + cell_width * column,
+                          margin + cell_height * row,
+                          cell_width, cell_height])
+        pygame.draw.circle(screen, color, [margin + cell_width * column + cell_width // 2,
+                                           margin + cell_height * row + cell_height // 2], cell_height//2)
+        pygame.draw.circle(screen, YELLOW, [margin + cell_width * column + cell_width // 2,
+                                           margin + cell_height * row + cell_height // 2], cell_height // 4)
+        # TODO: fix/decide -- circle vs. elipse
+
     # fresh canvas
     screen.fill(CAMBLUE)
     # Draw the grid
@@ -46,22 +68,23 @@ def draw_maze(grid, screen, cell_height, cell_width, margin):
             # wall = 1
             if grid[row][column] == 1:
                 color = CAMBLUE
-            # character is 2
+                draw_wall(row, column, color)
+            # player is 2
             elif grid[row][column] == 2:
-                color = GREEN
+                color = BROWN
+                draw_player(row, column, color)
             # finishing point
             elif grid[row][column] == 3:
                 color = BLUE
+                draw_finish(row, column, color)
             # what is this?
             elif grid[row][column] == 4:
                 color = YELLOW
             else:
                 # set default color
                 color = WHITE
-            pygame.draw.rect(screen, color,
-                             [margin + cell_width * column,
-                              margin + cell_height * row,
-                              cell_width, cell_height])
+                draw_void(row, column, color)
+
 
 
 '''
@@ -129,6 +152,7 @@ clock = pygame.time.Clock()  # how fast the screen takes to update
 ccolumn = 0
 rrow = 0
 grid[rrow][ccolumn] = 2
+grid[HEIGHT-1][WIDTH-1] = 3
 
 draw_maze(maze, screen, CELL_HEIGHT, CELL_WIDTH, MARGIN)
 pygame.display.update()
