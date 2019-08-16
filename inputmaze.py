@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 # Array-Backed Grids_Test
 
 from backend import *
->>>>>>> input_test
 import pygame
 from pygame.locals import *
 
@@ -14,30 +11,14 @@ white = (255, 255, 255)
 brown = (222, 184, 135)
 green = (107, 142, 35)
 blue = (135, 206, 250)
-<<<<<<< HEAD
-yellow = (255, 255, 0)
-=======
 yellow = (255, 215, 0)
->>>>>>> input_test
 
 # sets margin
 margin = 0
 
 # sides of a grid
-<<<<<<< HEAD
-width = 15
-height = 15
-
-grid = []
-for row in range(34):
-    # Add an empty array that will hold each cell in this row
-    grid.append([])
-    for column in range(21):
-        grid[row].append(0)  # Append a cell
-=======
 width = 40
 height = 40
->>>>>>> input_test
 
 x, y = 21, 34
 
@@ -55,49 +36,6 @@ done = False  # close button
 
 clock = pygame.time.Clock()  # how fast the screen takes to update
 
-<<<<<<< HEAD
-
-maze = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 3, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-
-grid = maze
-ccolumn = 1
-rrow = 1
-
-=======
->>>>>>> input_test
 # -------- Main Program Loop -----------
 
 def draw_maze():
@@ -122,39 +60,10 @@ while not done:
 
     pygame.event.pump()
     keys = pygame.key.get_pressed()
-<<<<<<< HEAD
-
-=======
->>>>>>> input_test
     if keys[K_ESCAPE]:
         done = True
 
     if keys[K_LEFT]:
-<<<<<<< HEAD
-        grid[ccolumn][rrow] = 0
-        rrow -= 1
-        grid[ccolumn][rrow] = 2
-        # player.move_left()
-
-    elif keys[K_RIGHT]:
-        grid[ccolumn][rrow] = 0
-        print("pre " + str(rrow))
-        rrow += 1
-        grid[ccolumn][rrow] = 2
-        print(rrow)
-        print("right")
-
-    elif keys[K_UP]:
-        grid[ccolumn][rrow] = 0
-        ccolumn -= 1
-        grid[ccolumn][rrow] = 2
-
-    elif keys[K_DOWN]:
-        grid[ccolumn][rrow] = 0
-        ccolumn += 1
-        grid[ccolumn][rrow] = 2
-        print("down")
-=======
         player.move_left()
         draw_maze()
         #pygame.display.flip()
@@ -170,7 +79,6 @@ while not done:
         player.move_down()
         draw_maze()
         #pygame.display.flip()
->>>>>>> input_test
 
     # Set the screen background
     screen.fill(white)
@@ -186,7 +94,6 @@ while not done:
             color = white
             # set colors for the elements
             # wall = 1
-<<<<<<< HEAD
             if grid[row][column] == 1:
                 color = brown
             # character is 2
@@ -199,36 +106,10 @@ while not done:
                 color = yellow
 
             pygame.draw.rect(screen, color,
-                             [width * column, height * row, width, height])
+                             [300/len(maze) * column, 300/len(maze[0]) * row, 300/len(maze), 300/len(maze[0])])
 
 
 <<<<<<< HEAD
-=======
-    pygame.event.pump()
-    keys = pygame.key.get_pressed()
-    if keys[K_ESCAPE]:
-        done = True
-
-    if keys[K_LEFT]:
-        print("left")
-        # player.move_left()
-
-    elif keys[K_RIGHT]:
-        print("right")
-        # player.move_right()
-        pygame.draw.rect(screen, GREEN,
-                         [WIDTH * column, HEIGHT * row, WIDTH + 1, HEIGHT])
-    elif keys[K_UP]:
-        print("up")
-        pygame.draw.rect(screen, GREEN,
-                         [WIDTH * column, HEIGHT * row, WIDTH, HEIGHT + 1])
-
-    elif keys[K_DOWN]:
-        print("down")
-        pygame.draw.rect(screen, GREEN,
-                         [WIDTH * column, HEIGHT * row, WIDTH, HEIGHT-1])
-
->>>>>>> ca10180c2dac0a06ca39e5fa945ec4050e3592f0
     # Limit to 60 frames per second
     clock.tick(10)
 

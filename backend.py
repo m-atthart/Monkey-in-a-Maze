@@ -156,20 +156,3 @@ game_map.createWall(3, 2) #places a wall at index[3][2]
 game_map.createWall(0, 0)
 game_map.createCoin(1, 3) #places coin at index[1][3]
 game_map.createCoin(2, 4)
-
-print(game_map.snapshotMap()) #prints encoding of map
-'''
-game_map.printMap() #prints map to console
-player.move_up() #moves player up
-player.move_right()
-print("Coins: " + str(player.coinCount))
-player.move_right() #moves player on top of coin
-print("Coins: " + str(player.coinCount)) #shows that player.coinCount increases
-player.move_right()
-player.move_down()
-print("Coins: " + str(player.coinCount))
-player.move_down()
-player.move_left()
-player.move_left() #tries to move player left into wall
-print("Moves: " + str(player.moveCount)) #shows final successful move count
-'''
