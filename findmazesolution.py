@@ -1,6 +1,7 @@
 #Code to find the optimum solution against the player
-import queue
+import queue, time
 mainq = queue.Queue()
+maze=[]
 mainq.put("1,1,0")
 distance = 0
 #function which gets called every time
@@ -47,13 +48,5 @@ while True:
     holder_i = int(holder_removed_from_que[0])
     holder_j = int(holder_removed_from_que[2])
     distance = int(holder_removed_from_que[4])
-
-
-
-    distance += 1
     # check if there are any adjacents
     checkAdjacent(holder_i, holder_j)
-
-    #now set it back to a wall if it's passed
-    maze[holder_i][holder_j] = distance
-
