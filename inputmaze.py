@@ -1,27 +1,22 @@
 # Array-Backed Grids_Test
 
+from backend import *
 import pygame
 from pygame.locals import *
 import numpy as np
 
 # Define colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BROWN = (222, 184, 135)
-GREEN = (107, 142, 35)
-BLUE = (135, 206, 250)
+black = (0, 0, 0)
+white = (255, 255, 255)
+brown = (222, 184, 135)
+green = (107, 142, 35)
+blue = (135, 206, 250)
+yellow = (255, 215, 0)
 
 
 # sides of a grid
-WIDTH = 15
-HEIGHT = 15
-
-grid = []
-for row in range(34):
-    # Add an empty array that will hold each cell in this row
-    grid.append([])
-    for column in range(21):
-        grid[row].append(0)  # Append a cell
+width = 40
+height = 40
 
 x, y = 21, 34
 
@@ -39,74 +34,27 @@ done = False  # close button
 
 clock = pygame.time.Clock()  # how fast the screen takes to update
 
-
-maze = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 3, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-
-grid = maze
 # -------- Main Program Loop -----------
+
+def draw_maze():
+    encoding = game_map.snapshotMap()
+    maze_height = encoding[0][0]
+    maze_width = encoding[0][1]
+    matrix = [[0 for j in range(maze_width)] for i in range(maze_height)]
+    player_pos = encoding[1]
+    matrix[player_pos[0]][player_pos[1]] = 2
+    for i in range(len(encoding[3])):
+        wall = encoding[3][i]
+        matrix[wall[0]][wall[1]] = 1
+    for i in range(len(encoding[2])):
+        coin = encoding[2][i]
+        matrix[coin[0]][coin[1]] = 4
+    return matrix
+
 while not done:
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             done = True # Flag that we are done so we exit this loop
-
-    # Set the screen background
-    screen.fill(WHITE)
-
-    # Draw the grid
-    # for row in range(34):
-    for row in range(len(grid)):
-        for column in range(len(grid[0])):
-            # for column in range(21):
-            color = WHITE
-            # set colors for the elements
-            # wall = 1
-            if grid[row][column] == 1:
-                color = BROWN
-            # character is 2
-            if grid[row][column] == 2:
-                color = GREEN
-                pos = grid[row][column]
-                posl = grid[row-1][column]
-            # finishing point
-            if grid[row][column] == 3:
-                color = BLUE
-
-            pygame.draw.rect(screen, color,
-                             [WIDTH * column, HEIGHT * row, WIDTH, HEIGHT])
-
 
     pygame.event.pump()
     keys = pygame.key.get_pressed()
@@ -114,30 +62,55 @@ while not done:
         done = True
 
     if keys[K_LEFT]:
-        print("left")
-        # player.move_left()
-
+        player.move_left()
+        draw_maze()
+        #pygame.display.flip()
     elif keys[K_RIGHT]:
-        print("right")
-        # player.move_right()
-        pygame.draw.rect(screen, GREEN,
-                         [WIDTH * column, HEIGHT * row, WIDTH + 1, HEIGHT])
+        player.move_right()
+        draw_maze()
+        #pygame.display.flip()
     elif keys[K_UP]:
-        print("up")
-        pygame.draw.rect(screen, GREEN,
-                         [WIDTH * column, HEIGHT * row, WIDTH, HEIGHT + 1])
-
+        player.move_up()
+        draw_maze()
+        #pygame.display.flip()
     elif keys[K_DOWN]:
-        print("down")
-        pygame.draw.rect(screen, GREEN,
-                         [WIDTH * column, HEIGHT * row, WIDTH, HEIGHT-1])
+        player.move_down()
+        draw_maze()
+        #pygame.display.flip()
 
-    # Limit to 60 frames per second
-    clock.tick(60)
+    # Set the screen background
+    screen.fill(white)
+
+    # Draw the grid
+
+    #new way to make maze
+    # for row in range(34):
+    maze = draw_maze()
+    for row in range(len(maze)):
+        for column in range(len(maze[0])):
+            # for column in range(21):
+            color = white
+            # set colors for the elements
+            # wall = 1
+            if maze[row][column] == 1:
+                color = brown
+            # character is 2
+            if maze[row][column] == 2:
+                color = green
+            # finishing point
+            if maze[row][column] == 3:
+                color = blue
+            if maze[row][column] == 4:
+                color = yellow
+
+            pygame.draw.rect(screen, color,
+                             [300/len(maze) * column, 300/len(maze[0]) * row, 300/len(maze), 300/len(maze[0])])
+
+    # Limit to 10 frames per second
+    clock.tick(10)
 
     pygame.display.flip()
-
-
+    pygame.display.update()
 
 # exit.
 pygame.quit()
