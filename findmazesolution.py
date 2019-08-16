@@ -1,35 +1,30 @@
-#matrix trial
+#Code to find the optimum solution against the player
 import queue
 mainq = queue.Queue()
 mainq.put("1,1,0")
 distance = 0
-
-
-
-
-
 #function which gets called every time
 def checkAdjacent(i, j):
     if i+1 < height and maze[i+1][j] == 0:
         holderstring = str(i+1) + "," + str(j) + "," +str(distance)
         mainq.put(holderstring)
         print(holderstring)
-        self.move_down
+        player.move_down
     if i-1 > -1 and maze[i-1][j] == 0:
         holderstring = str(i-1) + "," + str(j) + "," +str(distance)
         print(holderstring)
         mainq.put(holderstring)
-        self.move_up
+        player.move_up
     if j+1 < width and maze[i][j+1] == 0:
         holderstring = str(i) + "," + str(j+1) + "," +str(distance)
         print(holderstring)
         mainq.put(holderstring)
-        self.move_right
+        player.move_right
     if j-1 > -1 and maze[i][j-1] == 0:
         holderstring = str(i) + "," + str(j-1) + "," +str(distance)
         print(holderstring)
         mainq.put(holderstring)
-        self.move_left
+        player.move_left
 
 holder_removed_from_que = ""
 holder_i = 0
