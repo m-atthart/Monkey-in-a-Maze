@@ -1,11 +1,14 @@
 # Array-Backed Grids_Test
 
-from backend import *
+import backend
 import pygame
 from pygame.locals import *
+import random
+import mazegen
 
 
 # Define colors
+camblue = (163, 193, 173)
 black = (0, 0, 0)
 white = (255, 255, 255)
 brown = (222, 184, 135)
@@ -13,21 +16,58 @@ green = (107, 142, 35)
 blue = (135, 206, 250)
 yellow = (255, 215, 0)
 
+# grid size
+HEIGHT = 2 * random.randint(3,9) + 1
+WIDTH = HEIGHT + 2 * random.randint(1,3)
+
 # sets margin
-margin = 0
+margin = 12
 
 # sides of a grid
-width = 40
-height = 40
+width = 28
+height = 28
 
-x, y = 21, 34
 
-# set Window size
-WINDOW_SIZE = [315, 510]  # (width,height)
-screen = pygame.display.set_mode(WINDOW_SIZE)
+def init_window_size(maze, margin, cell_width, cell_height):
+    # set Window size
+    height = len(maze) * cell_height + 2 * margin
+    width = len(maze[0]) * cell_width + 2 * margin
+    return width, height
+
+def draw_maze(grid, screen, cell_height, cell_width, margin):
+    # fresh canvas
+    screen.fill(CAMBLUE)
+    # Draw the grid
+    # for row in range(34):
+    for row in range(len(grid)):
+        for column in range(len(grid[0])):
+            # set colors for the elements
+            # wall = 1
+            if grid[row][column] == 1:
+                color = CAMBLUE
+            # character is 2
+            elif grid[row][column] == 2:
+                color = GREEN
+            # finishing point
+            elif grid[row][column] == 3:
+                color = BLUE
+            # what is this?
+            elif grid[row][column] == 4:
+                color = YELLOW
+            else:
+                # set default color
+                color = WHITE
+            pygame.draw.rect(screen, color,
+                             [margin + cell_width * column,
+                              margin + cell_height * row,
+                              cell_width, cell_height])
+
+maze = mazegen.generate_maze(HEIGHT, WIDTH)
 
 # initialize pygame
 pygame.init()
+window_size = init_window_size(maze, MARGIN, CELL_WIDTH, CELL_HEIGHT)
+screen = pygame.display.set_mode(window_size)
 
 # Set title of screen
 pygame.display.set_caption("Monkey in the Maze")
@@ -38,7 +78,7 @@ clock = pygame.time.Clock()  # how fast the screen takes to update
 
 # -------- Main Program Loop -----------
 
-def draw_maze():
+def get_maze():
     encoding = game_map.snapshotMap()
     maze_height = encoding[0][0]
     maze_width = encoding[0][1]
@@ -58,27 +98,40 @@ while not done:
         if event.type == pygame.QUIT:  # If user clicked close
             done = True # Flag that we are done so we exit this loop
 
-    pygame.event.pump()
-    keys = pygame.key.get_pressed()
-    if keys[K_ESCAPE]:
-        done = True
+    if event.type == pygame.KEYUP:
+        if event.key == pygame.K_ESCAPE:
+            done = True
+        elif event.key == pygame.K_LEFT:
+            grid[ccolumn][rrow] = 0
+            rrow -= 1
+            grid[ccolumn][rrow] = 2
 
-    if keys[K_LEFT]:
-        player.move_left()
-        draw_maze()
-        #pygame.display.flip()
-    elif keys[K_RIGHT]:
-        player.move_right()
-        draw_maze()
-        #pygame.display.flip()
-    elif keys[K_UP]:
-        player.move_up()
-        draw_maze()
-        #pygame.display.flip()
-    elif keys[K_DOWN]:
-        player.move_down()
-        draw_maze()
-        #pygame.display.flip()
+            player.move_left()
+            get_maze()
+        elif event.key == pygame.K_RIGHT:
+            grid[ccolumn][rrow] = 0
+            print("pre " + str(rrow))
+            rrow += 1
+            grid[ccolumn][rrow] = 2
+            print(rrow)
+
+            player.move_right()
+            get_maze()
+        elif event.key == pygame.K_UP:
+            grid[ccolumn][rrow] = 0
+            ccolumn -= 1
+            grid[ccolumn][rrow] = 2
+
+            player.move_up()
+            get_maze()
+        elif event.key == pygame.K_DOWN:
+            grid[ccolumn][rrow] = 0
+            ccolumn += 1
+            grid[ccolumn][rrow] = 2
+            print("down")
+
+            player.move_down()
+            get_maze()
 
     # Set the screen background
     screen.fill(white)
@@ -87,7 +140,7 @@ while not done:
 
     #new way to make maze
     # for row in range(34):
-    maze = draw_maze()
+    maze = get_maze()
     for row in range(len(maze)):
         for column in range(len(maze[0])):
             # for column in range(21):
@@ -109,7 +162,7 @@ while not done:
                              [300/len(maze) * column, 300/len(maze[0]) * row, 300/len(maze), 300/len(maze[0])])
 
 
-<<<<<<< HEAD
+
     # Limit to 60 frames per second
     clock.tick(10)
 
@@ -117,17 +170,17 @@ while not done:
     #screen.blit(screen, (25, 25))
     pygame.display.update()
 
-=======
-            if maze[row][column] == 1:
-                color = brown
-            # character is 2
-            if maze[row][column] == 2:
-                color = green
-            # finishing point
-            if maze[row][column] == 3:
-                color = blue
-            if maze[row][column] == 4:
-                color = yellow
+
+    if maze[row][column] == 1:
+        color = brown
+    # character is 2
+    if maze[row][column] == 2:
+        color = green
+    # finishing point
+    if maze[row][column] == 3:
+        color = blue
+    if maze[row][column] == 4:
+        color = yellow
 
             pygame.draw.rect(screen, color,
                              [300/len(maze) * column, 300/len(maze[0]) * row, 300/len(maze), 300/len(maze[0])])
