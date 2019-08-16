@@ -1,81 +1,70 @@
-#Kruskal's maze generation algorithm
+# implementation of Kruskal's maze generation algorithm
 
 import random
 
-## START CASPAR CODE (MATRIX INIT)
 
-N = 11
-M = 11
-assert(N % 2 == 1 and M % 2 == 1)
+# global definitions
 DEBUG_FLAG = False
 
 
-def printmaze():
+def printmaze(maze):
     for pm in maze:
         print(pm)
     print("\n")
 
 
-#generating a random maze n x n with adaptable n
-maze = []
-height = int(N)
-width = int(M)
-count = 1
+## START CASPAR CODE (MATRIX INIT)
+def init_maze(height, width):
+    #generating a random maze n x n with adaptable n
+    maze = []
 
-#adding the rows to the bigger list and so to the matrix
-for i in range(height):
-    row = []
-    for j in range(width):
-        row.append(count)
-        count += 1
-    maze.append(row)
+    count = 1
+    #adding the rows to the bigger list and so to the matrix
+    for i in range(height):
+        row = []
+        for j in range(width):
+            row.append(count)
+            count += 1
+        maze.append(row)
 
-if DEBUG_FLAG:
-    printmaze()
+    if DEBUG_FLAG:
+        printmaze(maze)
 
-#first if
-#finding the values attached to the indexes with odd numbers in an even row and turning them into a wall by replacing them with a zero
-#second if
-#finding the values attached to the odd rows and turning them into a wall by replacing them with a zero
-#only the values attached to even indexes in both i(vertical) an j(horizontal) direction stay numbered
-open_counter=1
-for num1 in range(height):
-    for num2 in range(width):
-        if num1 % 2 == 0 and num2 % 2 == 1:
+    #first if
+    #finding the values attached to the indexes with odd numbers in an even row and turning them into a wall by replacing them with a zero
+    #second if
+    #finding the values attached to the odd rows and turning them into a wall by replacing them with a zero
+    #only the values attached to even indexes in both i(vertical) an j(horizontal) direction stay numbered
+    #open_counter = 1
+    for num1 in range(height):
+        for num2 in range(width):
+            if num1 % 2 == 0 and num2 % 2 == 1:
+                    maze[num1][num2] = 0
+            if num1 % 2 == 1:
                 maze[num1][num2] = 0
-        if num1 % 2 == 1:
-            maze[num1][num2] = 0
 
-if DEBUG_FLAG:
-    print('matrix init:')
-    printmaze()
+    if DEBUG_FLAG:
+        print('matrix init:')
+        printmaze(maze)
 
+    return maze
 ## END OF MATRIX INIT
 
-
-##### DEN CODE STARTS
-#define random even number generators. these select the first open cell 
-#def random_i_generator():
-#    random_i=random.randrange(0, height, 2)
-#    return(random_i)
-#def random_j_generator():
-#    random_j=random.randrange(0, width , 2)
-#    return(random_j)
-
-di = [-1, 0, 1,  0]
-dj = [ 0, 1, 0, -1]
 
 def random_coord(sz):
     return random.randrange(0, sz, 2)
 
+
 def colorit(maze, i, j, color):
     if DEBUG_FLAG:
         print('colorit')
-        printmaze()
+        printmaze(maze)
 
     if maze[i][j] != 0:
         maze[i][j] = color
         # color the neighbours
+        di = [-1, 0, 1, 0]
+        dj = [0, 1, 0, -1]
         for idx in range(len(di)):
             ii = i + di[idx]
             jj = j + dj[idx]
@@ -84,10 +73,7 @@ def colorit(maze, i, j, color):
                 colorit(maze, ii, jj, color)
 
 
-def iterate():
-    global cnt
-    print(cnt)
-
+def iterate(maze, height, width):
     # Find random closed cell (wall), which is an odd coordinate pair.
     # Generate a direction to go in
     # I is vertical axis; J is horizontal axis.
@@ -134,49 +120,52 @@ def iterate():
             if maze[random_i+1][random_j] != maze[random_i-1][random_j]:
                 curr_color = maze[random_i-1][random_j]
                 maze[random_i][random_j] = curr_color
-                cnt += 1
                 colorit(maze, random_i+1, random_j, curr_color)
+                return 1
         elif direction == 1: # right
             if maze[random_i][random_j+1] != maze[random_i][random_j-1]:
                 curr_color = maze[random_i][random_j-1]
                 maze[random_i][random_j] = curr_color
-                cnt += 1
                 colorit(maze, random_i, random_j+1, curr_color)
+                return 1
         elif direction == 2: # up
             if maze[random_i-1][random_j] != maze[random_i+1][random_j]:
                 curr_color = maze[random_i+1][random_j]
                 maze[random_i][random_j] = curr_color
-                cnt += 1
                 colorit(maze, random_i-1, random_j, curr_color)
+                return 1
         else: # (direction == 3) left
             if maze[random_i][random_j-1] != maze[random_i][random_j+1]:
                 curr_color = maze[random_i][random_j+1]
                 maze[random_i][random_j] = curr_color
-                cnt += 1
                 colorit(maze, random_i, random_j-1, curr_color)
+                return 1
+    # !
+    return 0
+
+
+def generate_maze(height, width):
+    assert (N % 2 == 1 and M % 2 == 1)
+    maze = init_maze(height, width)
+    cnt = 0
+    while cnt < (height // 2) * (2 + (width // 2)):
+        cnt += iterate(maze, height, width)
+    if DEBUG_FLAG:
+        printmaze(maze)
+
+    # normalise (walls = 0)
+    for i in range(len(maze)):
+        for j in range(len(maze[0])):
+            if maze[i][j] > 0:
+                maze[i][j] = 0
+            else:
+                maze[i][j] = 1
+
+    return maze
 
 
 # MAIN PART
-if DEBUG_FLAG:
-    printmaze()
-
-cnt = 0
-while cnt < (N // 2) * (2 + (M // 2)):
-    #print(cnt)
-    iterate()
-
-if DEBUG_FLAG or True:
-    printmaze()
-
-
-'''
-def countnonzero(mat):
-    cc = 0
-    for i in range(len(mat)):
-        for j in range(len(mat[0])):
-            if mat[i][j] > 0:
-                cc += 1
-    return cc
-
-print('helou: ' + str(M*N - countnonzero(maze)))
-'''
+N = 11
+M = 11
+res = generate_maze(N, M)
+printmaze(res)
