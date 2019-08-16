@@ -2,15 +2,6 @@
 import queue
 mainq = queue.Queue()
 mainq.put("1,1,0")
-#maze in form of a matrix
-maze = [
-    # j ---->
-    [0, 1, 1, 1], #i
-    [0, 1, 0, 1], #/
-    [0, 0, 0, 0], #/
-    [0, 1, 1, 0], #/
-    [0, 0, 1, 0], #/
-]
 width = len(maze[0])
 height = len(maze)
 distance = 0
