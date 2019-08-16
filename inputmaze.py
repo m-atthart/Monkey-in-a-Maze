@@ -36,7 +36,7 @@ def init_window_size(maze, margin, cell_width, cell_height):
 
 def draw_maze(grid, screen, cell_height, cell_width, margin):
     # fresh canvas
-    screen.fill(CAMBLUE)
+    screen.fill(camblue)
     # Draw the grid
     # for row in range(34):
     for row in range(len(grid)):
