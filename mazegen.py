@@ -152,6 +152,15 @@ def generate_maze(height, width):
         cnt += iterate(maze, height, width)
     if DEBUG_FLAG:
         printmaze(maze)
+
+    # normalise (walls = 0)
+    for i in range(len(maze)):
+        for j in range(len(maze[0])):
+            if maze[i][j] > 0:
+                maze[i][j] = 0
+            else:
+                maze[i][j] = 1
+
     return maze
 
 
