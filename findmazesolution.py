@@ -12,24 +12,24 @@ maze = [
     [0, 0, 1, 0], #/
 ]
 width = len(maze[0])
-heigth = len(maze)
+height = len(maze)
 distance = 0
 
-altMaze = [[-1] * (width + 2) for i in range(heigth + 2)]
-for i in range(1,heigth+1):
+altMaze = [[-1] * (width + 2) for i in range(height + 2)]
+for i in range(1,height+1):
     for j in range(1,width+1):
         altMaze[i][j] = maze[i-1][j-1]
 
-maze=altMaze
+maze = altMaze
 width = len(maze[0])
-heigth = len(maze)
+height = len(maze)
 distance = 0
 
 
 
 #function which gets called every time
 def checkAdjacent(i, j):
-    if i+1 < heigth and maze[i+1][j] == 0:
+    if i+1 < height and maze[i+1][j] == 0:
         holderstring = str(i+1) + "," + str(j) + "," +str(distance)
         mainq.put(holderstring)
         print(holderstring)
@@ -79,6 +79,3 @@ while True:
 
 for t in maze:
     print(t)
-
-
-
