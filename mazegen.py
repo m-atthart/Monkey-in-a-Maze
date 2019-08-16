@@ -48,6 +48,18 @@ def init_maze(height, width):
         printmaze(maze)
 
     return maze
+#Code to add a series of 0s in a wall around the maze if required
+'''
+#add a block of walls around the maze
+altMaze = [[0] * (width + 2) for i in range(height + 2)]
+for i in range(1,height+1):
+    for j in range(1,width+1):
+        altMaze[i][j] = maze[i-1][j-1]
+
+maze = altMaze
+width = len(maze[0])
+height = len(maze)
+distance = 0 ''' 
 ## END OF MATRIX INIT
 
 

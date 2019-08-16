@@ -36,7 +36,7 @@ def init_window_size(maze, margin, cell_width, cell_height):
 
 def draw_maze(grid, screen, cell_height, cell_width, margin):
     # fresh canvas
-    screen.fill(CAMBLUE)
+    screen.fill(camblue)
     # Draw the grid
     # for row in range(34):
     for row in range(len(grid)):
@@ -44,7 +44,7 @@ def draw_maze(grid, screen, cell_height, cell_width, margin):
             # set colors for the elements
             # wall = 1
             if grid[row][column] == 1:
-                color = CAMBLUE
+                color = camblue
             # character is 2
             elif grid[row][column] == 2:
                 color = GREEN
