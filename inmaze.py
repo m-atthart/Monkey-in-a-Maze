@@ -156,14 +156,6 @@ def draw_maze(maze, screen, cell_height, cell_width, margin):
                 draw_void(row, column, color)
 
 
-
-
-
-
-
-
-
-
 def get_maze(gamemap, player):
     encoding = gamemap.snapshotMap(player)
     maze_height = encoding[0][0]
@@ -180,28 +172,6 @@ def get_maze(gamemap, player):
         coin = encoding[4][i]
         matrix[coin[0]][coin[1]] = 4
     return matrix
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # -------- Main Program Loop -----------
