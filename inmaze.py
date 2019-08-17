@@ -90,10 +90,6 @@ def draw_maze(maze, screen, cell_height, cell_width, margin):
 
 
 
-map2 = Map(4, 5)
-
-
-
 
 
 
@@ -153,7 +149,7 @@ for i in range(len(maze)):
             gamemap.createExit(i, j)
         if maze[i][j] == 4:
             gamemap.createCoin(i, j)
-player = Player(1, 1, gamemap)
+player = Player(0, 0, gamemap)
 '''
 game_map = [[1] * (width+2) for i in range(height+2)]
 for i in range(1,height+1):
@@ -215,8 +211,8 @@ pygame.display.set_caption("Monkey in the Maze")
 # TODO: remove?
 clock = pygame.time.Clock()  # how fast the screen takes to update
 
-
-draw_maze(gamemap.matrix, screen, cell_height, cell_width, margin)
+inital_grid = get_maze(gamemap)
+draw_maze(get_maze(gamemap), screen, cell_height, cell_width, margin)
 pygame.display.update()
 
 done = False
