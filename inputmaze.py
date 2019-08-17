@@ -182,7 +182,7 @@ while not done:
     if maze[row][column] == 4:
         color = yellow
 
-            pygame.draw.rect(screen, color,
+    pygame.draw.rect(screen, color,
                              [300/len(maze) * column, 300/len(maze[0]) * row, 300/len(maze), 300/len(maze[0])])
 
     # Limit to 10 frames per second
@@ -190,7 +190,6 @@ while not done:
 
     pygame.display.flip()
     pygame.display.update()
->>>>>>> input_test
 
 # exit.
 pygame.quit()
