@@ -6,9 +6,9 @@ class Space:
         self.isPlayer = player #debugging purposes
     def __repr__(self): #debugging purposes
         if self.isPlayer:
-            return "P"
+            return "2"
         else:
-            return "-"
+            return "0"
 
 class Coin(Space):
     def __init__(self, i, j, pickedUp = False):
@@ -17,16 +17,19 @@ class Coin(Space):
         self.isPickedUp = pickedUp
     def __repr__(self): #debugging purposes
         if player.posI == self.posI and player.posJ == self.posJ:
-            return "P"
+            return "2"
         elif not self.isPickedUp:
-            return "c"
+            return "4"
         else:
-            return "-"
+            return "0"
 
 class Wall(Space):
     def __repr__(self): #debugging purposes
-        return "x"
+        return "1"
 
+class Exit(Space):
+    def __repr__(self): #debugging purposes
+        return "3"
 
 class Map:
     def __init__(self, height, width):
@@ -38,20 +41,25 @@ class Map:
         self.matrix[i][j] = Wall()
     def createCoin(self, i, j):
         self.matrix[i][j] = Coin(i, j)
+    def createExit(self, i, j):
+        self.matrix[i][j] = Exit(i, j)
 
     def snapshotMap(self, player): #encodes data for GUI
         dimensions = [[self.height, self.width]]
         playerpos = [[player.posI, player.posJ]]
+        exitpos = [[]]
         coins = [[]]
         walls = [[]]
         for i in range(self.height):
             for j in range(self.width):
-                if type(self.matrix[i][j]) == Wall:
+                if type(self.matrix[i][j]) == Exit:
+                    exitpos[0].append(i, j)
+                elif type(self.matrix[i][j]) == Wall:
                     walls[0].append([i, j])
                 elif type(self.matrix[i][j]) == Coin:
                     if not self.matrix[i][j].isPickedUp:
                         coins[0].append([i, j])
-        encoding = dimensions + playerpos + coins + walls
+        encoding = dimensions + playerpos + exitpos + walls + coins
         return encoding
     def printMap(self): #debugging purposes
         for i in range(len(self.matrix)):
@@ -80,13 +88,13 @@ class Player:
             self.bottomIsWall = True
         if self.posJ > 0 and type(gamemap.matrix[self.posI][self.posJ-1]) == Wall:
             self.leftIsWall = True
-        if type(gamemap.matrix[self.posI-1][self.posJ]) != Wall:
+        if self.posI > 0 and type(gamemap.matrix[self.posI-1][self.posJ]) != Wall:
             self.topIsWall = False
-        if type(gamemap.matrix[self.posI][self.posJ+1]) != Wall:
+        if self.posJ+1 < gamemap.width and type(gamemap.matrix[self.posI][self.posJ+1]) != Wall:
             self.rightIsWall = False
-        if type(gamemap.matrix[self.posI+1][self.posJ]) != Wall:
+        if self.posI+1 < gamemap.height and type(gamemap.matrix[self.posI+1][self.posJ]) != Wall:
             self.bottomIsWall = False
-        if type(gamemap.matrix[self.posI][self.posJ-1]) != Wall:
+        if self.posJ > 0 and type(gamemap.matrix[self.posI][self.posJ-1]) != Wall:
             self.leftIsWall = False
 
     def checkCoin(self, gamemap): #checks if current space is of type coin
@@ -150,11 +158,13 @@ class Player:
 
 
 #example game
+'''
 game_map = Map(10, 10) #initialize map with height: 4 and width: 5
 player = Player(2, 1, game_map) #instantiates player at index[2][1]
 game_map.createWall(3, 2) #places a wall at index[3][2]
 game_map.createWall(0, 0)
 game_map.createCoin(1, 3) #places coin at index[1][3]
 game_map.createCoin(2, 4)
+'''
 #game_map.printMap()
 #player.move_right(game_map)
