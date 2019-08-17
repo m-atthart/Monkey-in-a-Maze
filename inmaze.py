@@ -21,7 +21,7 @@ height = 2 * random.randint(5,11) + 1
 width = height + 2 * random.randint(2,5)
 
 # sets margin
-margin = 12
+margin = -12
 
 # sides of a cell
 cell_width = 28
@@ -137,7 +137,7 @@ def get_maze(gamemap):
 
 # init map
 maze = mazegen.generate_maze(height, width)
-gamemap = Map(height, width)
+gamemap = Map(len(maze), len(maze[0]))
 for i in range(len(maze)):
     for j in range(len(maze[i])):
         if maze[i][j] == 1:
@@ -149,7 +149,7 @@ for i in range(len(maze)):
             gamemap.createExit(i, j)
         if maze[i][j] == 4:
             gamemap.createCoin(i, j)
-player = Player(0, 0, gamemap)
+player = Player(1, 1, gamemap)
 '''
 game_map = [[1] * (width+2) for i in range(height+2)]
 for i in range(1,height+1):

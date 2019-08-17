@@ -59,7 +59,7 @@ for i in range(1,height+1):
 maze = altMaze
 width = len(maze[0])
 height = len(maze)
-distance = 0 ''' 
+distance = 0 '''
 ## END OF MATRIX INIT
 
 
@@ -173,6 +173,28 @@ def generate_maze(height, width):
             else:
                 maze[i][j] = 1
 
+
+    for i in range(len(maze)):
+        last_value = maze[i][-1]
+        for j in range(len(maze[i])):
+            if j+1 == len(maze[i]):
+                maze[i][0] = 1
+            else:
+                maze[i][-(j+1)] = maze[i][-(j+2)]
+        maze[i].append(last_value)
+        maze[i].append(1)
+    width += 2
+
+
+    last_row = maze[-1]
+    for i in range(len(maze)):
+        if i+1 == len(maze):
+            maze[0] = [1] * width
+        else:
+            maze[-(i+1)] = maze[-(i+2)]
+    maze.append(last_row)
+    maze.append([1] * width)
+    height += 2
     return maze
 
 
@@ -180,4 +202,4 @@ def generate_maze(height, width):
 N = 11
 M = 11
 res = generate_maze(N, M)
-printmaze(res)
+#printmaze(res)
