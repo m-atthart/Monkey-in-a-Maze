@@ -27,7 +27,7 @@ margin = -12
 cell_width = 28
 cell_height = 28
 
-def start_game(height, width):
+def start_game(height, width, mode):
     maze = mazegen.generate_maze(height, width)
     gamemap = Map(len(maze), len(maze[0]))
     for i in range(len(maze)):
