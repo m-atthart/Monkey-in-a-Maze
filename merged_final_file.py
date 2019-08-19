@@ -475,7 +475,7 @@ def start_game(height, width, mode):
             grid = []
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
-                    done = True
+                    done = correctTrue
                 elif event.key == pygame.K_LEFT:
                     player.move_left(gamemap)
                     grid = get_maze(gamemap, player)
@@ -581,4 +581,4 @@ def get_maze(gamemap, player):
 
 
 print("Starting game! \n")
-start_game(5, 5, 1)
+start_game(23, 23, 1)
