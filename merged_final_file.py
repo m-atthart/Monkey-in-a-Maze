@@ -428,6 +428,8 @@ cell_height = 28
 
 def start_game(height, width, mode):
     maze = generate_maze(height, width)
+    correct=mainCheck(height, width, maze)
+    print(correct)
     if True:
     #if mainCheck(height, width, maze):
         gamemap = MazeMap(len(maze), len(maze[0]))
@@ -579,4 +581,4 @@ def get_maze(gamemap, player):
 
 
 print("Starting game! \n")
-start_game(11, 11, 1)
+start_game(5, 5, 1)
