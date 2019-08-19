@@ -1,11 +1,18 @@
 #FINAL MERGED PYTHON FILE
 #IMPORTS:
-import random, queue
-# global definitions
+import random, queue, time, pygame
+from pygame.locals import *
+# initiate required variables
 DEBUG_FLAG = False
+height=0
+width=0
+
+distance=0
+
+#-------------------------------------------------------------------------------------------------------------------------------------
 
 
-#Firstly, generate the maze! (merged from mazegen.py)
+#Firstly, generate the maze! (from mazegen.py)
 # implementation of Kruskal's maze generation algorithm
 def printmaze(maze):
     for pm in maze:
@@ -18,9 +25,9 @@ def init_maze(height, width):
     maze = []
     count = 1
     #add the rows to the bigger list and then to the matrix
-    for i in range(height):
+    for _ in range(height):
         row = []
-        for j in range(width):
+        for _ in range(width):
             row.append(count)
             count += 1
         maze.append(row)
@@ -135,17 +142,18 @@ def iterate(maze, height, width):
                 maze[random_i][random_j] = curr_color
                 colorit(maze, random_i, random_j-1, curr_color)
                 return 1
-    # !
+    
     return 0
 
 
 def generate_maze(height, width):
-    assert (N % 2 == 1 and M % 2 == 1)
+    assert (height % 2 == 1 and height % 2 == 1)
     maze = init_maze(height, width)
     cnt = 0
     while cnt < (height // 2) * (2 + (width // 2)):
         cnt += iterate(maze, height, width)
     if DEBUG_FLAG:
+        print("GENERATE_MAZE DEBUG:")
         printmaze(maze)
 
     # normalise (walls = 0)
@@ -180,9 +188,406 @@ def generate_maze(height, width):
     height += 2
     return maze
 
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# MAIN PART
-N = 11
-M = 11
-res = generate_maze(N, M)
-#printmaze(res)
+
+#Then, check that the maze can be solved! (from findmazesolution.py)
+#Code to find the optimum solution against the player
+
+mainq = queue.Queue()
+mainq.put("1,1,0")
+#function which gets called every time
+def check_iter(i, j, maze):
+    print("I="+str(i)+" J="+str(j))
+    if i+1 < height and maze[i+1][j] == 0:
+        holderstring = str(i+1) + "," + str(j) + "," +str(distance)
+        mainq.put(holderstring)
+        print(holderstring)
+        #player.move_down
+    if i-1 > -1 and maze[i-1][j] == 0:
+        holderstring = str(i-1) + "," + str(j) + "," +str(distance)
+        print(holderstring)
+        mainq.put(holderstring)
+        #player.move_up
+    if j+1 < width and maze[i][j+1] == 0:
+        holderstring = str(i) + "," + str(j+1) + "," +str(distance)
+        print(holderstring)
+        mainq.put(holderstring)
+        #player.move_right
+    if j-1 > -1 and maze[i][j-1] == 0:
+        holderstring = str(i) + "," + str(j-1) + "," +str(distance)
+        print(holderstring)
+        mainq.put(holderstring)
+        #player.move_left
+
+def mainCheck(height, width, maze):
+    print("Checking maze to ensure it's solveable by the user!")
+    holder_removed_from_que = ""
+    holder_i = 0
+    holder_j = 0
+    while True:
+        #check if the queue is empty, if it is, there are no solutions anymore, print message
+        if holder_i == 1 and holder_j == width-1:
+            return(True)
+
+        if mainq.empty():
+            return(False)
+        
+        #split the que into two integers
+        holder_removed_from_que = mainq.get()
+        str.split(holder_removed_from_que, ",")
+        print(str(holder_removed_from_que) + " has been removed from queue and will now be checked" )
+        holder_i = int(holder_removed_from_que[0])
+        holder_j = int(holder_removed_from_que[2])
+        distance = int(holder_removed_from_que[4])
+        # check if there are any adjacents
+        print("\n")
+        
+        check_iter(holder_i, holder_j, maze)
+
+#------------------------------------------------------------------------------------------------------------------------------------------------
+#Initialise the "backend" - this contains all of the classes for the player, coins etc.
+
+
+class Space:
+    def __init__(self, player = False):
+        self.isPlayer = player #debugging purposes
+    def __repr__(self): #debugging purposes
+        if self.isPlayer:
+            return "2"
+        else:
+            return "0"
+
+class Coin(Space):
+    def __init__(self, i, j, pickedUp = False):
+        self.posI = i #debugging purposes
+        self.posJ = j #debugging purposes
+        self.isPickedUp = pickedUp
+    def __repr__(self): #debugging purposes
+        if Player.posI == self.posI and Player.posJ == self.posJ:
+            return "2"
+        elif not self.isPickedUp:
+            return "4"
+        else:
+            return "0"
+
+class Wall(Space):
+    def __repr__(self): #debugging purposes
+        return "1"
+
+class Exit(Space):
+    def __repr__(self): #debugging purposes
+        return "3"
+
+class Map:
+    def __init__(self, height, width):
+        self.height = height
+        self.width = width
+        self.matrix = [[Space() for i in range(width)] for j in range(height)]
+
+    def createWall(self, i, j):
+        self.matrix[i][j] = Wall()
+    def createCoin(self, i, j):
+        self.matrix[i][j] = Coin(i, j)
+    def createExit(self, i, j):
+        self.matrix[i][j] = Exit(i, j)
+
+    def snapshotMap(self, player): #encodes data for GUI
+        dimensions = [[self.height, self.width]]
+        playerpos = [[player.posI, player.posJ]]
+        exitpos = [[]]
+        coins = [[]]
+        walls = [[]]
+        for i in range(self.height):
+            for j in range(self.width):
+                if type(self.matrix[i][j]) == Exit:
+                    exitpos[0].append(i, j)
+                elif type(self.matrix[i][j]) == Wall:
+                    walls[0].append([i, j])
+                elif type(self.matrix[i][j]) == Coin:
+                    if not self.matrix[i][j].isPickedUp:
+                        coins[0].append([i, j])
+        encoding = dimensions + playerpos + exitpos + walls + coins
+        return encoding
+    def printMap(self): #debugging purposes
+        for i in range(len(self.matrix)):
+            print(str(self.matrix[i]) + "\n")
+        print("\n")
+
+
+class Player:
+    def __init__(self, posI, posJ, gamemap, topWall = False, rightWall = False, bottomWall = False, leftWall = False, coins = 0, moves = 0):
+        self.posI = posI
+        self.posJ = posJ
+        self.topIsWall = topWall #boolean. if space above is of type wall
+        self.rightIsWall = rightWall
+        self.bottomIsWall = bottomWall
+        self.leftIsWall = leftWall
+        self.coinCount = coins #coin counter
+        self.moveCount = moves #move counter
+        gamemap.matrix[self.posI][self.posJ].isPlayer = True #initializes player on map
+
+    def checkWalls(self, gamemap): #checks spaces around player and changes attributes if needed
+        if self.posI > 0 and type(gamemap.matrix[self.posI-1][self.posJ]) == Wall: #checks if top is wall
+            self.topIsWall = True
+        if self.posJ+1 < gamemap.width and type(gamemap.matrix[self.posI][self.posJ+1]) == Wall:
+            self.rightIsWall = True
+        if self.posI+1 < gamemap.height and type(gamemap.matrix[self.posI+1][self.posJ]) == Wall:
+            self.bottomIsWall = True
+        if self.posJ > 0 and type(gamemap.matrix[self.posI][self.posJ-1]) == Wall:
+            self.leftIsWall = True
+        if self.posI > 0 and type(gamemap.matrix[self.posI-1][self.posJ]) != Wall:
+            self.topIsWall = False
+        if self.posJ+1 < gamemap.width and type(gamemap.matrix[self.posI][self.posJ+1]) != Wall:
+            self.rightIsWall = False
+        if self.posI+1 < gamemap.height and type(gamemap.matrix[self.posI+1][self.posJ]) != Wall:
+            self.bottomIsWall = False
+        if self.posJ > 0 and type(gamemap.matrix[self.posI][self.posJ-1]) != Wall:
+            self.leftIsWall = False
+
+    def checkCoin(self, gamemap): #checks if current space is of type coin
+        if type(gamemap.matrix[self.posI][self.posJ]) == Coin and not gamemap.matrix[self.posI][self.posJ].isPickedUp:
+            self.coinCount += 1
+            gamemap.matrix[self.posI][self.posJ].isPickedUp = True
+
+    def move_up(self, gamemap): #moves player up
+        self.checkWalls(gamemap)
+        if not self.topIsWall:
+            gamemap.matrix[self.posI-1][self.posJ].isPlayer = True #debugging purposes
+            gamemap.matrix[self.posI][self.posJ].isPlayer = False #debugging purposes
+            self.posI -= 1 #updates saved position values
+            self.checkCoin(gamemap)
+            self.moveCount += 1
+        else:
+            print("You can't go that way\n")
+        print(gamemap.snapshotMap(self)) #debugging purposes
+        gamemap.printMap() #debugging purposes
+    def move_right(self, gamemap):
+        self.checkWalls(gamemap)
+        if not self.rightIsWall:
+            gamemap.matrix[self.posI][self.posJ+1].isPlayer = True #debugging purposes
+            gamemap.matrix[self.posI][self.posJ].isPlayer = False #debugging purposes
+            self.posJ += 1
+            self.checkCoin(gamemap)
+            self.moveCount += 1
+        else:
+            print("You can't go that way\n")
+        print(gamemap.snapshotMap(self)) #debugging purposes
+        gamemap.printMap() #debugging purposes
+    def move_down(self, gamemap):
+        self.checkWalls(gamemap)
+        if not self.bottomIsWall:
+            gamemap.matrix[self.posI+1][self.posJ].isPlayer = True #debugging purposes
+            gamemap.matrix[self.posI][self.posJ].isPlayer = False #debugging purposes
+            self.posI += 1
+            self.checkCoin(gamemap)
+            self.moveCount += 1
+        else:
+            print("You can't go that way\n")
+        print(gamemap.snapshotMap(self)) #debugging purposes
+        gamemap.printMap() #debugging purposes
+    def move_left(self, gamemap):
+        self.checkWalls(gamemap)
+        if not self.leftIsWall:
+            gamemap.matrix[self.posI][self.posJ-1].isPlayer = True #debugging purposes
+            gamemap.matrix[self.posI][self.posJ].isPlayer = False #debugging purposes
+            self.posJ -= 1
+            self.checkCoin(gamemap)
+            self.moveCount += 1
+        else:
+            print("You can't go that way\n")
+        print(gamemap.snapshotMap(self)) #debugging purposes
+        gamemap.printMap() #debugging purposes
+
+#------------------------------------------------------------------------------------------------------------------------------------------------
+#The actual pygame loop! Merged from inputmaze.py
+
+#SETTINGS
+
+# Define colors
+camblue = (163, 193, 173)
+black = (0, 0, 0)
+white = (255, 255, 255)
+brown = (222, 184, 135)
+green = (107, 142, 35)
+blue = (135, 206, 250)
+yellow = (255, 215, 0)
+
+# maze size
+#height = 2 * random.randint(5,11) + 1
+#width = height + 2 * random.randint(2,5)
+
+# sets margin
+margin = -12
+
+# sides of a cell
+cell_width = 28
+cell_height = 28
+
+def start_game(height, width, mode):
+    maze = generate_maze(height, width)
+    print("Maze generated!:")
+    printmaze(maze)
+    print("\n")
+    correct=mainCheck(height, width, maze)
+    if correct: 
+        gamemap = Map(len(maze), len(maze[0]))
+        for i in range(len(maze)):
+            for j in range(len(maze[i])):
+                if maze[i][j] == 1:
+                    gamemap.createWall(i, j)
+                if maze[i][j] == 2:
+                    player = Player(i, j)
+                    gamemap.matrix[self.posI][self.posJ].isPlayer = True
+                if maze[i][j] == 3:
+                    gamemap.createExit(i, j)
+                if maze[i][j] == 4:
+                    gamemap.createCoin(i, j)
+    '''THIS IS THE ISSUE: NEED TO FIX CHECK IF IT'S CORRECT OTHERWISE IT'LL CONSTANTLY RECURSE AND END UP HERE'''
+    #else:
+     #   start_game(height, width, mode)
+    player = Player(1, 1, gamemap)
+
+    # initialize pygame
+    #pygame.init()
+
+    # init screen
+    window_size = init_window_size(maze, margin, cell_width, cell_height)
+    screen = pygame.display.set_mode(window_size)
+
+    # Set title of screen
+    pygame.display.set_caption("Monkey in the Maze")
+
+    # not sure what's this far - not used later
+    # TODO: remove?
+    clock = pygame.time.Clock()  # how fast the screen takes to update
+
+    inital_grid = get_maze(gamemap, player)
+    draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
+    pygame.display.update()
+
+    done = False
+    while not done:
+        for event in pygame.event.get():  # User did something
+            if event.type == pygame.QUIT:  # If user clicked close
+                done = True # Flag that we are done so we exit this loop
+            grid = []
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_ESCAPE:
+                    done = True
+                elif event.key == pygame.K_LEFT:
+                    player.move_left(gamemap)
+                    grid = get_maze(gamemap, player)
+                elif event.key == pygame.K_RIGHT:
+                    player.move_right(gamemap)
+                    grid = get_maze(gamemap, player)
+                elif event.key == pygame.K_UP:
+                    player.move_up(gamemap)
+                    grid = get_maze(gamemap, player)
+                elif event.key == pygame.K_DOWN:
+                    player.move_down(gamemap)
+                    grid = get_maze(gamemap, player)
+                else:
+                    grid = get_maze(gamemap, player)
+
+                # Set the screen background
+                draw_maze(grid, screen, cell_height, cell_width, margin)
+
+                # Limit to 60 frames per second
+                #clock.tick(8)
+
+                #pygame.display.flip()
+                #screen.blit(screen, (25, 25))
+                pygame.display.update()
+
+
+    # exit.
+    pygame.QUIT()
+
+def init_window_size(maze, margin, cell_width, cell_height):
+    # set Window size
+    height = (len(maze)) * cell_height + 2 * margin
+    width = (len(maze[0])) * cell_width + 2 * margin
+    return width, height
+
+def draw_maze(maze, screen, cell_height, cell_width, margin):
+    def draw_wall(row, column, color):
+        pygame.draw.rect(screen, color,
+                         [margin + cell_width * column,
+                          margin + cell_height * row,
+                          cell_width, cell_height])
+    def draw_void(row, column, color):
+        draw_wall(row, column, color)
+
+    def draw_finish(row, column, color):
+        draw_wall(row, column, color)
+
+    def draw_player(row, column, color):
+        pygame.draw.rect(screen, white,
+                         [margin + cell_width * column,
+                          margin + cell_height * row,
+                          cell_width, cell_height])
+        pygame.draw.circle(screen, color, [margin + cell_width * column + cell_width // 2,
+                                           margin + cell_height * row + cell_height // 2], cell_height//2)
+        pygame.draw.circle(screen, yellow, [margin + cell_width * column + cell_width // 2,
+                                           margin + cell_height * row + cell_height // 2], cell_height // 4)
+        # TODO: fix/decide -- circle vs. elipse
+
+    # fresh canvas
+    screen.fill(camblue)
+    # Draw the maze
+    # for row in range(34):
+    for row in range(len(maze)):
+        for column in range(len(maze[0])):
+            # set colors for the elements
+            # wall = 1
+            if maze[row][column] == 1:
+                color = camblue
+                draw_wall(row, column, color)
+            # player is 2
+            elif maze[row][column] == 2:
+                color = brown
+                draw_player(row, column, color)
+            # finishing point
+            elif maze[row][column] == 3:
+                color = blue
+                draw_finish(row, column, color)
+            # what is this?
+            elif maze[row][column] == 4:
+                color = yellow
+            else:
+                # set default color
+                color = white
+                draw_void(row, column, color)
+
+
+def get_maze(gamemap, player):
+    encoding = gamemap.snapshotMap(player)
+    maze_height = encoding[0][0]
+    maze_width = encoding[0][1]
+    matrix = [[0 for j in range(maze_width)] for i in range(maze_height)]
+    player_pos = encoding[1]
+    matrix[player_pos[0]][player_pos[1]] = 2
+    #exit_pos = encoding[2]
+    #matrix[exit_pos[0]][exit_pos[1]] = 3
+    for i in range(len(encoding[3])):
+        wall = encoding[3][i]
+        matrix[wall[0]][wall[1]] = 1
+    for i in range(len(encoding[4])):
+        coin = encoding[4][i]
+        matrix[coin[0]][coin[1]] = 4
+    return matrix
+
+
+height_easy = 2 * random.randint(3, 6) + 1
+width_easy = height_easy + 2 * random.randint(2,5)
+height_med = 2 * random.randint(5,11) + 1
+width_med = height_med + 2 * random.randint(2,5)
+height_hard = 2 * random.randint(10, 15) + 1
+width_hard = height_hard + 2 * random.randint(3,5)
+height_ai = 2 * random.randint(13, 15) + 1
+width_ai = height_ai + 2 * random.randint(4,6)
+
+
+print("Starting game! \n")
+start_game(height_hard, width_hard, 1)

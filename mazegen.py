@@ -1,10 +1,11 @@
 #Firstly, generate the maze! (merged from mazegen.py)
+import random
 # implementation of Kruskal's maze generation algorithm
 def printmaze(maze):
     for pm in maze:
         print(pm)
     print("\n")
-
+DEBUG_FLAG=False
 #Initiate the matrix
 def init_maze(height, width):
     #generating a random maze n x n with adaptable n

@@ -8,13 +8,13 @@ import mazegen
 
 
 # Define colors
-camblue = (163, 193, 173)
-black = (0, 0, 0)
-white = (255, 255, 255)
-brown = (222, 184, 135)
-green = (107, 142, 35)
-blue = (135, 206, 250)
-yellow = (255, 215, 0)
+CAMBLUE = (163, 193, 173)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+BROWN = (222, 184, 135)
+GREEN = (107, 142, 35)
+BLUE = (135, 206, 250)
+YELLOW = (255, 215, 0)
 
 # grid size
 HEIGHT = 2 * random.randint(3,9) + 1
