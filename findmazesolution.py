@@ -1,9 +1,10 @@
 #Code to find the optimum solution against the player
 import queue, time
 mainq = queue.Queue()
-maze=[]
 mainq.put("1,1,0")
 distance = 0
+height=0
+width=0
 #function which gets called every time
 def check_iter(i, j):
     if i+1 < height and maze[i+1][j] == 0:
@@ -28,7 +29,7 @@ def check_iter(i, j):
         player.move_left
 
 
-def mainCheck():
+def mainCheck(height, width):
     holder_removed_from_que = ""
     holder_i = 0
     holder_j = 0

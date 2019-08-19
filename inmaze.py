@@ -30,8 +30,8 @@ cell_height = 28
 
 def start_game(height, width, mode):
     maze = mazegen.generate_maze(height, width)
-    gamemap = Map(len(maze), len(maze[0]))
-    if findmazesolution.mainCheck():
+    if findmazesolution.mainCheck(height, width):
+        gamemap = Map(len(maze), len(maze[0]))
         for i in range(len(maze)):
             for j in range(len(maze[i])):
                 if maze[i][j] == 1:
@@ -43,6 +43,8 @@ def start_game(height, width, mode):
                     gamemap.createExit(i, j)
                 if maze[i][j] == 4:
                     gamemap.createCoin(i, j)
+    else:
+        start_game(height, width, mode)
     player = Player(1, 1, gamemap)
 
     # initialize pygame
