@@ -31,21 +31,21 @@ cell_height = 28
 def start_game(height, width, mode):
     maze = mazegen.generate_maze(height, width)
     if findmazesolution.mainCheck(height, width):
-        gamemap = Map(len(maze), len(maze[0]))
+        maze = maze
         for i in range(len(maze)):
             for j in range(len(maze[i])):
                 if maze[i][j] == 1:
-                    gamemap.createWall(i, j)
+                    maze.createWall(i, j)
                 if maze[i][j] == 2:
                     player = Player(i, j)
-                    gamemap.matrix[self.posI][self.posJ].isPlayer = True
+                    maze.matrix[self.posI][self.posJ].isPlayer = True
                 if maze[i][j] == 3:
-                    gamemap.createExit(i, j)
+                    maze.createExit(i, j)
                 if maze[i][j] == 4:
-                    gamemap.createCoin(i, j)
+                    maze.createCoin(i, j)
     else:
         start_game(height, width, mode)
-    player = Player(1, 1, gamemap)
+    player = Player(1, 1, maze)
 
     # initialize pygame
     #pygame.init()
@@ -61,8 +61,8 @@ def start_game(height, width, mode):
     # TODO: remove?
     clock = pygame.time.Clock()  # how fast the screen takes to update
 
-    inital_grid = get_maze(gamemap, player)
-    draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
+    inital_grid = get_maze(maze, player)
+    draw_maze(get_maze(maze, player), screen, cell_height, cell_width, margin)
     pygame.display.update()
 
     done = False
@@ -75,19 +75,19 @@ def start_game(height, width, mode):
                 if event.key == pygame.K_ESCAPE:
                     done = True
                 elif event.key == pygame.K_LEFT:
-                    player.move_left(gamemap)
-                    grid = get_maze(gamemap, player)
+                    player.move_left(maze)
+                    grid = get_maze(maze, player)
                 elif event.key == pygame.K_RIGHT:
-                    player.move_right(gamemap)
-                    grid = get_maze(gamemap, player)
+                    player.move_right(maze)
+                    grid = get_maze(maze, player)
                 elif event.key == pygame.K_UP:
-                    player.move_up(gamemap)
-                    grid = get_maze(gamemap, player)
+                    player.move_up(maze)
+                    grid = get_maze(maze, player)
                 elif event.key == pygame.K_DOWN:
-                    player.move_down(gamemap)
-                    grid = get_maze(gamemap, player)
+                    player.move_down(maze)
+                    grid = get_maze(maze, player)
                 else:
-                    grid = get_maze(gamemap, player)
+                    grid = get_maze(maze, player)
 
                 # Set the screen background
                 draw_maze(grid, screen, cell_height, cell_width, margin)
@@ -160,8 +160,8 @@ def draw_maze(maze, screen, cell_height, cell_width, margin):
                 draw_void(row, column, color)
 
 
-def get_maze(gamemap, player):
-    encoding = gamemap.snapshotMap(player)
+def get_maze(maze, player):
+    encoding = maze.snapshotMap(player)
     maze_height = encoding[0][0]
     maze_width = encoding[0][1]
     matrix = [[0 for j in range(maze_width)] for i in range(maze_height)]
@@ -183,19 +183,19 @@ def get_maze(gamemap, player):
 # init map
 '''
 maze = mazegen.generate_maze(height, width)
-gamemap = Map(len(maze), len(maze[0]))
+maze = Map(len(maze), len(maze[0]))
 for i in range(len(maze)):
     for j in range(len(maze[i])):
         if maze[i][j] == 1:
-            gamemap.createWall(i, j)
+            maze.createWall(i, j)
         if maze[i][j] == 2:
             player = Player(i, j)
-            gamemap.matrix[self.posI][self.posJ].isPlayer = True
+            maze.matrix[self.posI][self.posJ].isPlayer = True
         if maze[i][j] == 3:
-            gamemap.createExit(i, j)
+            maze.createExit(i, j)
         if maze[i][j] == 4:
-            gamemap.createCoin(i, j)
-player = Player(1, 1, gamemap)
+            maze.createCoin(i, j)
+player = Player(1, 1, maze)
 '''
 '''
 game_map = [[1] * (width+2) for i in range(height+2)]
@@ -258,8 +258,8 @@ pygame.display.set_caption("Monkey in the Maze")
 # TODO: remove?
 clock = pygame.time.Clock()  # how fast the screen takes to update
 
-inital_grid = get_maze(gamemap, player)
-draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
+inital_grid = get_maze(maze, player)
+draw_maze(get_maze(maze, player), screen, cell_height, cell_width, margin)
 pygame.display.update()
 
 done = False
@@ -272,19 +272,19 @@ while not done:
             if event.key == pygame.K_ESCAPE:
                 done = True
             elif event.key == pygame.K_LEFT:
-                player.move_left(gamemap)
-                grid = get_maze(gamemap, player)
+                player.move_left(maze)
+                grid = get_maze(maze, player)
             elif event.key == pygame.K_RIGHT:
-                player.move_right(gamemap)
-                grid = get_maze(gamemap, player)
+                player.move_right(maze)
+                grid = get_maze(maze, player)
             elif event.key == pygame.K_UP:
-                player.move_up(gamemap)
-                grid = get_maze(gamemap, player)
+                player.move_up(maze)
+                grid = get_maze(maze, player)
             elif event.key == pygame.K_DOWN:
-                player.move_down(gamemap)
-                grid = get_maze(gamemap, player)
+                player.move_down(maze)
+                grid = get_maze(maze, player)
             else:
-                grid = get_maze(gamemap, player)
+                grid = get_maze(maze, player)
 
             # Set the screen background
             draw_maze(grid, screen, cell_height, cell_width, margin)

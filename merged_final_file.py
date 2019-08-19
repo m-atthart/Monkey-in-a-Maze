@@ -221,7 +221,8 @@ def check_iter(i, j, maze):
         #player.move_left
 
 def mainCheck(height, width, maze):
-    print("Checking maze to ensure it's solveable by the user!")
+    if DEBUG_FLAG:
+        print("Checking maze to ensure it's solveable by the user!")
     holder_removed_from_que = ""
     holder_i = 0
     holder_j = 0
@@ -236,7 +237,8 @@ def mainCheck(height, width, maze):
         #split the que into two integers
         holder_removed_from_que = mainq.get()
         str.split(holder_removed_from_que, ",")
-        print(str(holder_removed_from_que) + " has been removed from queue and will now be checked" )
+        if DEBUG_FLAG:
+            print(str(holder_removed_from_que) + " has been removed from queue and will now be checked" )
         holder_i = int(holder_removed_from_que[0])
         holder_j = int(holder_removed_from_que[2])
         distance = int(holder_removed_from_que[4])
@@ -279,7 +281,7 @@ class Exit(Space):
     def __repr__(self): #debugging purposes
         return "3"
 
-class Map:
+class MazeMap:
     def __init__(self, height, width):
         self.height = height
         self.width = width
@@ -402,7 +404,7 @@ class Player:
 #------------------------------------------------------------------------------------------------------------------------------------------------
 #The actual pygame loop! Merged from inputmaze.py
 
-#SETTINGS
+# SETTINGS
 
 # Define colors
 camblue = (163, 193, 173)
@@ -426,12 +428,9 @@ cell_height = 28
 
 def start_game(height, width, mode):
     maze = generate_maze(height, width)
-    print("Maze generated!:")
-    printmaze(maze)
-    print("\n")
-    correct=mainCheck(height, width, maze)
-    if correct: 
-        gamemap = Map(len(maze), len(maze[0]))
+    if True:
+    #if mainCheck(height, width, maze):
+        gamemap = MazeMap(len(maze), len(maze[0]))
         for i in range(len(maze)):
             for j in range(len(maze[i])):
                 if maze[i][j] == 1:
@@ -443,9 +442,9 @@ def start_game(height, width, mode):
                     gamemap.createExit(i, j)
                 if maze[i][j] == 4:
                     gamemap.createCoin(i, j)
-    '''THIS IS THE ISSUE: NEED TO FIX CHECK IF IT'S CORRECT OTHERWISE IT'LL CONSTANTLY RECURSE AND END UP HERE'''
-    #else:
-     #   start_game(height, width, mode)
+    else:
+        print("oh no :/ it doesn't work, sorry, you're trapped?")
+        #start_game(height, width, mode)
     player = Player(1, 1, gamemap)
 
     # initialize pygame
@@ -502,7 +501,7 @@ def start_game(height, width, mode):
 
 
     # exit.
-    pygame.QUIT()
+    pygame.quit()
 
 def init_window_size(maze, margin, cell_width, cell_height):
     # set Window size
@@ -579,15 +578,5 @@ def get_maze(gamemap, player):
     return matrix
 
 
-height_easy = 2 * random.randint(3, 6) + 1
-width_easy = height_easy + 2 * random.randint(2,5)
-height_med = 2 * random.randint(5,11) + 1
-width_med = height_med + 2 * random.randint(2,5)
-height_hard = 2 * random.randint(10, 15) + 1
-width_hard = height_hard + 2 * random.randint(3,5)
-height_ai = 2 * random.randint(13, 15) + 1
-width_ai = height_ai + 2 * random.randint(4,6)
-
-
 print("Starting game! \n")
-start_game(height_hard, width_hard, 1)
+start_game(11, 11, 1)
