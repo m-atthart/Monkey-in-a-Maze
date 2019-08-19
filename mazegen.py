@@ -1,86 +1,62 @@
+#Firstly, generate the maze! (merged from mazegen.py)
 # implementation of Kruskal's maze generation algorithm
-
-import random
-
-
-# global definitions
-DEBUG_FLAG = False
-
-
 def printmaze(maze):
     for pm in maze:
         print(pm)
     print("\n")
 
-
-## START CASPAR CODE (MATRIX INIT)
+#Initiate the matrix
 def init_maze(height, width):
     #generating a random maze n x n with adaptable n
     maze = []
-
     count = 1
-    #adding the rows to the bigger list and so to the matrix
+    #add the rows to the bigger list and then to the matrix
     for i in range(height):
         row = []
         for j in range(width):
             row.append(count)
             count += 1
         maze.append(row)
-
     if DEBUG_FLAG:
         printmaze(maze)
-
-    #first if
-    #finding the values attached to the indexes with odd numbers in an even row and turning them into a wall by replacing them with a zero
-    #second if
-    #finding the values attached to the odd rows and turning them into a wall by replacing them with a zero
-    #only the values attached to even indexes in both i(vertical) an j(horizontal) direction stay numbered
-    #open_counter = 1
+    #first if:
+    #finds the values attached to the indexes with odd numbers in an even row and turns them into a wall by replacing them with a zero
+    #second if:
+    #finds the values attached to the odd rows and turns them into a wall by replacing them with a zero
+    #only the values attached to even indexes in both i(vertical) and j(horizontal) direction stay numbered
     for num1 in range(height):
         for num2 in range(width):
             if num1 % 2 == 0 and num2 % 2 == 1:
                     maze[num1][num2] = 0
             if num1 % 2 == 1:
                 maze[num1][num2] = 0
-
+    #For debug: Print empty initiated matrix
     if DEBUG_FLAG:
         print('matrix init:')
         printmaze(maze)
-
     return maze
-#Code to add a series of 0s in a wall around the maze if required
-'''
-#add a block of walls around the maze
-altMaze = [[0] * (width + 2) for i in range(height + 2)]
-for i in range(1,height+1):
-    for j in range(1,width+1):
-        altMaze[i][j] = maze[i-1][j-1]
 
-maze = altMaze
-width = len(maze[0])
-height = len(maze)
-distance = 0 '''
-## END OF MATRIX INIT
-
-
+#Define random coordinate generator
 def random_coord(sz):
     return random.randrange(0, sz, 2)
 
-
+#Function that's used to change the merged numbers of two groups to the same number
+#Called colorit as colours were used during design for visualisation
 def colorit(maze, i, j, color):
     if DEBUG_FLAG:
         print('colorit')
         printmaze(maze)
-
+    #if not wall:
     if maze[i][j] != 0:
         maze[i][j] = color
         # color the neighbours
         di = [-1, 0, 1, 0]
         dj = [0, 1, 0, -1]
+        #iterate through the neighbours
         for idx in range(len(di)):
             ii = i + di[idx]
             jj = j + dj[idx]
-            # check are we in the range
+            # check if in the matrix or out of range
             if 0 <= ii < len(maze) and 0 <= jj < len(maze[0]) and maze[ii][jj] != color:
                 colorit(maze, ii, jj, color)
 
@@ -123,7 +99,7 @@ def iterate(maze, height, width):
         print('(random_i, random_j) = (' + str(random_i) + ', ' + str(random_j) + ')')
         print('maze[random_i][random_j] = ' + str(maze[random_i][random_j]))
 
-    # (random_i, random_j) -- the coordinate of the wall under consideration
+    # (random_i, random_j) are now = coordinates of the wall under consideration
 
     # check if the wall has already been opened
     if maze[random_i][random_j] == 0:
