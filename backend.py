@@ -42,7 +42,7 @@ class Map:
     def createCoin(self, i, j):
         self.matrix[i][j] = Coin(i, j)
     def createExit(self, i, j):
-        self.matrix[i][j] = Exit(i, j)
+        self.matrix[i][j] = Exit()
 
     def snapshotMap(self, player): #encodes data for GUI
         dimensions = [[self.height, self.width]]
@@ -53,7 +53,7 @@ class Map:
         for i in range(self.height):
             for j in range(self.width):
                 if type(self.matrix[i][j]) == Exit:
-                    exitpos[0].append(i, j)
+                    exitpos[0].append([i, j])
                 elif type(self.matrix[i][j]) == Wall:
                     walls[0].append([i, j])
                 elif type(self.matrix[i][j]) == Coin:

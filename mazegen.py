@@ -174,6 +174,11 @@ def generate_maze(height, width):
                 maze[i][j] = 1
 
 
+    # add exit
+    maze[-1][-1] = 3
+    maze[0][0] = 2
+
+    # add walls around maze
     for i in range(len(maze)):
         last_value = maze[i][-1]
         for j in range(len(maze[i])):

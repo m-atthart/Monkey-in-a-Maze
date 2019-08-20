@@ -15,6 +15,7 @@ brown = (222, 184, 135)
 green = (107, 142, 35)
 blue = (135, 206, 250)
 yellow = (255, 215, 0)
+neon = (180, 250, 45)
 
 # maze size
 #height = 2 * random.randint(5,11) + 1
@@ -35,13 +36,14 @@ def start_game(height, width, mode):
             if maze[i][j] == 1:
                 gamemap.createWall(i, j)
             if maze[i][j] == 2:
-                player = Player(i, j)
-                gamemap.matrix[self.posI][self.posJ].isPlayer = True
+                player = Player(i, j, gamemap)
+                gamemap.matrix[i][j].isPlayer = True
             if maze[i][j] == 3:
                 gamemap.createExit(i, j)
+                print(type(gamemap.matrix[-2][-2]))
             if maze[i][j] == 4:
                 gamemap.createCoin(i, j)
-    player = Player(1, 1, gamemap)
+    #player = Player(1, 1, gamemap)
 
     # initialize pygame
     #pygame.init()
@@ -57,7 +59,6 @@ def start_game(height, width, mode):
     # TODO: remove?
     clock = pygame.time.Clock()  # how fast the screen takes to update
 
-    inital_grid = get_maze(gamemap, player)
     draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
     pygame.display.update()
 
@@ -72,21 +73,15 @@ def start_game(height, width, mode):
                     done = True
                 elif event.key == pygame.K_LEFT:
                     player.move_left(gamemap)
-                    grid = get_maze(gamemap, player)
                 elif event.key == pygame.K_RIGHT:
                     player.move_right(gamemap)
-                    grid = get_maze(gamemap, player)
                 elif event.key == pygame.K_UP:
                     player.move_up(gamemap)
-                    grid = get_maze(gamemap, player)
                 elif event.key == pygame.K_DOWN:
                     player.move_down(gamemap)
-                    grid = get_maze(gamemap, player)
-                else:
-                    grid = get_maze(gamemap, player)
 
                 # Set the screen background
-                draw_maze(grid, screen, cell_height, cell_width, margin)
+                draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
 
                 # Limit to 60 frames per second
                 #clock.tick(8)
@@ -133,21 +128,21 @@ def draw_maze(maze, screen, cell_height, cell_width, margin):
     # Draw the maze
     # for row in range(34):
     for row in range(len(maze)):
-        for column in range(len(maze[0])):
-            # set colors for the elements
-            # wall = 1
+        for column in range(len(maze[row])):
+            # set colors for the elements:
+            # wall
             if maze[row][column] == 1:
                 color = camblue
                 draw_wall(row, column, color)
-            # player is 2
+            # player
             elif maze[row][column] == 2:
                 color = brown
                 draw_player(row, column, color)
-            # finishing point
+            # exit
             elif maze[row][column] == 3:
-                color = blue
+                color = neon
                 draw_finish(row, column, color)
-            # what is this?
+            # coin
             elif maze[row][column] == 4:
                 color = yellow
             else:
@@ -163,8 +158,8 @@ def get_maze(gamemap, player):
     matrix = [[0 for j in range(maze_width)] for i in range(maze_height)]
     player_pos = encoding[1]
     matrix[player_pos[0]][player_pos[1]] = 2
-    #exit_pos = encoding[2]
-    #matrix[exit_pos[0]][exit_pos[1]] = 3
+    exit_pos = encoding[2][0]
+    matrix[exit_pos[0]][exit_pos[1]] = 3
     for i in range(len(encoding[3])):
         wall = encoding[3][i]
         matrix[wall[0]][wall[1]] = 1
@@ -254,7 +249,7 @@ pygame.display.set_caption("Monkey in the Maze")
 # TODO: remove?
 clock = pygame.time.Clock()  # how fast the screen takes to update
 
-inital_grid = get_maze(gamemap, player)
+initial_grid = get_maze(gamemap, player)
 draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
 pygame.display.update()
 
