@@ -67,7 +67,6 @@ def start_game(height, width, mode):
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True # Flag that we are done so we exit this loop
-            grid = []
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
                     done = True
@@ -79,6 +78,9 @@ def start_game(height, width, mode):
                     player.move_up(gamemap)
                 elif event.key == pygame.K_DOWN:
                     player.move_down(gamemap)
+
+                if gamemap.matrix[-2][-2].isPlayer == True: # if user gets to end
+                    done = True
 
                 # Set the screen background
                 draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
