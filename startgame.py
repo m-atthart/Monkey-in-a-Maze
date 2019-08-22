@@ -41,10 +41,10 @@ def play_watch_ai():
     inmaze.start_game(height_ai, width_ai, 8)
     #mode8. make playercomp=Player(). make findmazesolution moves trigger playercomp.move_direction()
 def play_race_ai():
-    pass
+    inmaze.start_game(height_hard, width_hard, 7)
     #mode7. make playercomp. don't make player. pass pauser=false to findmazesolution func. if mode == 4, pauser=true -> when ai finds solution, pause for .75 sec between performing moves
 def play_two_player():
-    pass
+    inmaze.start_game(height_hard, width_hard, 2)
     #mode2. make player2=Player(). add ifs for wasd for player2.move_direction()
 def play_flashlight():
     pass

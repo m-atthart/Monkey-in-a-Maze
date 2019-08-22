@@ -28,7 +28,11 @@ margin = -12
 cell_width = 28
 cell_height = 28
 
+global_mode = None
+
 def start_game(height, width, mode):
+    global global_mode
+    global_mode = mode
     maze = mazegen.generate_maze(height, width)
     gamemap = Map(len(maze), len(maze[0]))
     for i in range(len(maze)):
@@ -37,6 +41,8 @@ def start_game(height, width, mode):
                 gamemap.createWall(i, j)
             if maze[i][j] == 2:
                 player = Player(i, j, gamemap)
+                gamemap.matrix[i][j].isPlayer = True
+                player2 = Player(i, j, gamemap)
                 gamemap.matrix[i][j].isPlayer = True
             if maze[i][j] == 3:
                 gamemap.createExit(i, j)
@@ -59,7 +65,7 @@ def start_game(height, width, mode):
     # TODO: remove?
     clock = pygame.time.Clock()  # how fast the screen takes to update
 
-    draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
+    draw_maze(get_maze(gamemap, player, player2), screen, cell_height, cell_width, margin)
     pygame.display.update()
 
     done = False
@@ -79,11 +85,20 @@ def start_game(height, width, mode):
                 elif event.key == pygame.K_DOWN:
                     player.move_down(gamemap)
 
+                elif event.key == pygame.K_w:
+                    player2.move_up(gamemap)
+                elif event.key == pygame.K_a:
+                    player2.move_left(gamemap)
+                elif event.key == pygame.K_s:
+                    player2.move_down(gamemap)
+                elif event.key == pygame.K_d:
+                    player2.move_right(gamemap)
+
                 if gamemap.matrix[-2][-2].isPlayer == True: # if user gets to end
                     done = True
 
                 # Set the screen background
-                draw_maze(get_maze(gamemap, player), screen, cell_height, cell_width, margin)
+                draw_maze(get_maze(gamemap, player, player2), screen, cell_height, cell_width, margin)
 
                 # Limit to 60 frames per second
                 #clock.tick(8)
@@ -147,26 +162,33 @@ def draw_maze(maze, screen, cell_height, cell_width, margin):
             # coin
             elif maze[row][column] == 4:
                 color = yellow
+            # player2
+            elif global_mode == 2 and maze[row][column] == 5:
+                print("printing p2")
+                color = black
+                draw_player(row, column, color)
             else:
                 # set default color
                 color = white
                 draw_void(row, column, color)
 
 
-def get_maze(gamemap, player):
-    encoding = gamemap.snapshotMap(player)
+def get_maze(gamemap, player, player2):
+    encoding = gamemap.snapshotMap(player, player2)
     maze_height = encoding[0][0]
     maze_width = encoding[0][1]
     matrix = [[0 for j in range(maze_width)] for i in range(maze_height)]
+    player2_pos = encoding[2]
+    matrix[player2_pos[0]][player2_pos[1]] = 5
     player_pos = encoding[1]
     matrix[player_pos[0]][player_pos[1]] = 2
-    exit_pos = encoding[2][0]
+    exit_pos = encoding[3][0]
     matrix[exit_pos[0]][exit_pos[1]] = 3
-    for i in range(len(encoding[3])):
-        wall = encoding[3][i]
-        matrix[wall[0]][wall[1]] = 1
     for i in range(len(encoding[4])):
-        coin = encoding[4][i]
+        wall = encoding[4][i]
+        matrix[wall[0]][wall[1]] = 1
+    for i in range(len(encoding[5])):
+        coin = encoding[5][i]
         matrix[coin[0]][coin[1]] = 4
     return matrix
 

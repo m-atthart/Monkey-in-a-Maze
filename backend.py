@@ -44,9 +44,10 @@ class Map:
     def createExit(self, i, j):
         self.matrix[i][j] = Exit()
 
-    def snapshotMap(self, player): #encodes data for GUI
+    def snapshotMap(self, player, player2): #encodes data for GUI
         dimensions = [[self.height, self.width]]
         playerpos = [[player.posI, player.posJ]]
+        player2pos = [[player2.posI, player2.posJ]]
         exitpos = [[]]
         coins = [[]]
         walls = [[]]
@@ -59,7 +60,7 @@ class Map:
                 elif type(self.matrix[i][j]) == Coin:
                     if not self.matrix[i][j].isPickedUp:
                         coins[0].append([i, j])
-        encoding = dimensions + playerpos + exitpos + walls + coins
+        encoding = dimensions + playerpos + player2pos + exitpos + walls + coins
         return encoding
     def printMap(self): #debugging purposes
         for i in range(len(self.matrix)):
@@ -112,7 +113,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way\n")
-        print(gamemap.snapshotMap(self)) #debugging purposes
+        #print(gamemap.snapshotMap(self)) #debugging purposes
         gamemap.printMap() #debugging purposes
     def move_right(self, gamemap):
         self.checkWalls(gamemap)
@@ -124,7 +125,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way\n")
-        print(gamemap.snapshotMap(self)) #debugging purposes
+        #print(gamemap.snapshotMap(self)) #debugging purposes
         gamemap.printMap() #debugging purposes
     def move_down(self, gamemap):
         self.checkWalls(gamemap)
@@ -136,7 +137,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way\n")
-        print(gamemap.snapshotMap(self)) #debugging purposes
+        #print(gamemap.snapshotMap(self)) #debugging purposes
         gamemap.printMap() #debugging purposes
     def move_left(self, gamemap):
         self.checkWalls(gamemap)
@@ -148,7 +149,7 @@ class Player:
             self.moveCount += 1
         else:
             print("You can't go that way\n")
-        print(gamemap.snapshotMap(self)) #debugging purposes
+        #print(gamemap.snapshotMap(self)) #debugging purposes
         gamemap.printMap() #debugging purposes
 
 
