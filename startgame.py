@@ -38,7 +38,7 @@ def play_hard():
     inmaze.start_game(height_hard, width_hard, 1)
     #mode1
 def play_watch_ai():
-    inmaze.start_game(height_ai, width_ai, 8)
+    inmaze.start_game(height_easy, width_easy, 8)
     #mode8. make playercomp=Player(). make findmazesolution moves trigger playercomp.move_direction()
 def play_race_ai():
     inmaze.start_game(height_hard, width_hard, 7)

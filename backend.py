@@ -44,10 +44,11 @@ class Map:
     def createExit(self, i, j):
         self.matrix[i][j] = Exit()
 
-    def snapshotMap(self, player, player2): #encodes data for GUI
+    def snapshotMap(self, player, player2, playercomp): #encodes data for GUI
         dimensions = [[self.height, self.width]]
         playerpos = [[player.posI, player.posJ]]
         player2pos = [[player2.posI, player2.posJ]]
+        playercomppos = [[playercomp.posI, playercomp.posJ]]
         exitpos = [[]]
         coins = [[]]
         walls = [[]]
@@ -60,7 +61,7 @@ class Map:
                 elif type(self.matrix[i][j]) == Coin:
                     if not self.matrix[i][j].isPickedUp:
                         coins[0].append([i, j])
-        encoding = dimensions + playerpos + player2pos + exitpos + walls + coins
+        encoding = dimensions + playerpos + player2pos + exitpos + walls + coins + playercomppos
         return encoding
     def printMap(self): #debugging purposes
         for i in range(len(self.matrix)):

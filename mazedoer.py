@@ -1,38 +1,7 @@
 from math import floor
-
-maze = [
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-[1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-[1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1],
-[1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1],
-[1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-[1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1],
-[1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-]
-
-nodelist = [
-[[1,1],      [1,5],[1,7],[1,9],       [1,13]],
-[[3,1],[3,3],            [3,9],[3,11]       ],
-[[5,1],[5,3],      [5,7],[5,9],[5,11],[5,13]],
-[[7,1],[7,3],[7,5],            [7,11],[7,13]]
-]
-
-big_maze = [
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-[1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
-[1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
-[1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
-[1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
-[1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
-[1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1],
-[1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+from backend import *
+from time import sleep
+import inmaze
 
 def get_nodes(maze):
     nodes = []
@@ -176,3 +145,33 @@ def bfs_shortest_path(graph, start, goal):
 
 def solve_maze(maze):
     return [unpairing(node) for node in bfs_shortest_path(get_graph(maze), pairing(1, 1), pairing(len(maze)-2, len(maze[-2])-2))]
+
+def ai_solve(maze):
+    solution = solve_maze(maze)
+    [i, j] = solution[0]
+    moves_list = []
+    for move in range(len(solution)-1):
+        [next_i, next_j] = solution[move+1]
+        while i != next_i:
+            if i < next_i:
+                #sleep(1)
+                moves_list.append("down")
+                #playercomp.move_down(gamemap)
+                i += 1
+            elif i > next_i:
+                #sleep(1)
+                moves_list.append("up")
+                #playercomp.move_up(gamemap)
+                i -= 1
+        while j != next_j:
+            if j < next_j:
+                #sleep(1)
+                moves_list.append("right")
+                #playercomp.move_right(gamemap)
+                j += 1
+            elif j > next_j:
+                #sleep(1)
+                moves_list.append("left")
+                #playercomp.move_left(gamemap)
+                j -= 1
+    return moves_list
