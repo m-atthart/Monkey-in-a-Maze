@@ -112,9 +112,10 @@ class Player:
             self.checkCoin(gamemap)
             self.moveCount += 1
         else:
-            print("You can't go that way\n")
+            pass
+            #print("You can't go that way\n")
         #print(gamemap.snapshotMap(self)) #debugging purposes
-        gamemap.printMap() #debugging purposes
+        #gamemap.printMap() #debugging purposes
     def move_right(self, gamemap):
         self.checkWalls(gamemap)
         if not self.rightIsWall:
@@ -124,9 +125,10 @@ class Player:
             self.checkCoin(gamemap)
             self.moveCount += 1
         else:
-            print("You can't go that way\n")
+            pass
+            #print("You can't go that way\n")
         #print(gamemap.snapshotMap(self)) #debugging purposes
-        gamemap.printMap() #debugging purposes
+        #gamemap.printMap() #debugging purposes
     def move_down(self, gamemap):
         self.checkWalls(gamemap)
         if not self.bottomIsWall:
@@ -136,9 +138,10 @@ class Player:
             self.checkCoin(gamemap)
             self.moveCount += 1
         else:
-            print("You can't go that way\n")
+            pass
+            #print("You can't go that way\n")
         #print(gamemap.snapshotMap(self)) #debugging purposes
-        gamemap.printMap() #debugging purposes
+        #gamemap.printMap() #debugging purposes
     def move_left(self, gamemap):
         self.checkWalls(gamemap)
         if not self.leftIsWall:
@@ -148,9 +151,10 @@ class Player:
             self.checkCoin(gamemap)
             self.moveCount += 1
         else:
-            print("You can't go that way\n")
+            pass
+            #print("You can't go that way\n")
         #print(gamemap.snapshotMap(self)) #debugging purposes
-        gamemap.printMap() #debugging purposes
+        #gamemap.printMap() #debugging purposes
 
 
 
