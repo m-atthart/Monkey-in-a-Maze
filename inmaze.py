@@ -110,7 +110,7 @@ def start_game(height, width, mode):
                 if event.key == pygame.K_DOWN:
                     player.move_down(gamemap)
 
-                if global_mode == 5:
+                if global_mode == 2:
                     if event.key == pygame.K_w:
                         player2.move_up(gamemap)
                     if event.key == pygame.K_a:
