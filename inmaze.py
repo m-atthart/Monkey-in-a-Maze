@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
 import random
-from time import sleep
 
 import mazedoer
 import mazegen
@@ -9,7 +8,7 @@ from backend import *
 
 # SETTINGS
 
-# Define colors
+# Define colours
 camblue = (163, 193, 173)
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -19,10 +18,6 @@ blue = (135, 206, 250)
 yellow = (255, 215, 0)
 neon = (180, 250, 45)
 magenta = (230, 5, 235)
-
-# maze size
-#height = 2 * random.randint(5,11) + 1
-#width = height + 2 * random.randint(2,5)
 
 # sets margin
 margin = -12
@@ -59,15 +54,10 @@ def start_game(height, width, mode):
                 gamemap.createExit(i, j)
             if maze[i][j] == 4:
                 gamemap.createCoin(i, j)
-    for line in maze:
-        print(line)
-    print("\n")
-    for line in gamemap.matrix:
-        print(line)
-    #player = Player(1, 1, gamemap)
+
 
     # initialize pygame
-    #pygame.init()
+    pygame.init()
 
     # init screen
     window_size = init_window_size(maze, margin, cell_width, cell_height)
@@ -83,13 +73,13 @@ def start_game(height, width, mode):
     draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
     pygame.display.update()
 
-    if global_mode == 8:
+    if global_mode == 6:
         done = False
         while not done:
             if global_mode == 8:
                 solution = mazedoer.ai_solve(maze)
                 for move in solution:
-                    sleep(1)
+                    pygame.time.wait(1000)
                     if move == "right":
                         playercomp.move_right(gamemap)
                     elif move == "down":
@@ -106,79 +96,62 @@ def start_game(height, width, mode):
                     pygame.display.update()
 
     done = False
+    move2 = -1
+    solution = mazedoer.ai_solve(maze)
     while not done:
+        if global_mode == 8:
+            if move2 >= 0:
+                direction = solution[move2]
+                if direction == "right":
+                    playercomp.move_right(gamemap)
+                elif direction == "down":
+                    playercomp.move_down(gamemap)
+                elif direction == "up":
+                    playercomp.move_up(gamemap)
+                elif direction == "left":
+                    playercomp.move_left(gamemap)
+            draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
+            pygame.display.update()
+            if move2 < len(solution) - 1:
+                move2 += 1
+            pygame.time.wait(200)
+            if gamemap.matrix[-2][-2].isPlayer == True: # if user gets to end
+                done = True
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True # Flag that we are done so we exit this loop
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
                     done = True
-                elif event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT:
                     player.move_left(gamemap)
-                elif event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT:
                     player.move_right(gamemap)
-                elif event.key == pygame.K_UP:
+                if event.key == pygame.K_UP:
                     player.move_up(gamemap)
-                elif event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN:
                     player.move_down(gamemap)
 
-                elif event.key == pygame.K_w:
-                    player2.move_up(gamemap)
-                elif event.key == pygame.K_a:
-                    player2.move_left(gamemap)
-                elif event.key == pygame.K_s:
-                    player2.move_down(gamemap)
-                elif event.key == pygame.K_d:
-                    player2.move_right(gamemap)
+                if global_mode == 5:
+                    if event.key == pygame.K_w:
+                        player2.move_up(gamemap)
+                    if event.key == pygame.K_a:
+                        player2.move_left(gamemap)
+                    if event.key == pygame.K_s:
+                        player2.move_down(gamemap)
+                    if event.key == pygame.K_d:
+                        player2.move_right(gamemap)
+
+
 
                 if gamemap.matrix[-2][-2].isPlayer == True: # if user gets to end
                     done = True
 
                 # Set the screen background
                 draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
-
-                # Limit to 60 frames per second
-                #clock.tick(8)
-
-                #pygame.display.flip()
-                #screen.blit(screen, (25, 25))
                 pygame.display.update()
 
-
-    # exit.
     pygame.quit()
-
-def ai_solve(maze, gamemap, playercomp, player, player2, screen, cell_height, cell_width, margin):
-    solution = mazedoer.solve_maze(maze)
-    [i, j] = solution[0]
-    for move in range(len(solution)-1):
-        [next_i, next_j] = solution[move+1]
-        while i != next_i:
-            if i < next_i:
-                sleep(1)
-                playercomp.move_down(gamemap)
-                i += 1
-                draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
-                pygame.display.update()
-            elif i > next_i:
-                sleep(1)
-                playercomp.move_up(gamemap)
-                i -= 1
-                draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
-                pygame.display.update()
-        while j != next_j:
-            if j < next_j:
-                sleep(1)
-                playercomp.move_right(gamemap)
-                j += 1
-                draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
-                pygame.display.update()
-            elif j > next_j:
-                sleep(1)
-                playercomp.move_left(gamemap)
-                j -= 1
-                draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
-                pygame.display.update()
 
 def init_window_size(maze, margin, cell_width, cell_height):
     # set Window size
@@ -187,23 +160,23 @@ def init_window_size(maze, margin, cell_width, cell_height):
     return width, height
 
 def draw_maze(maze, screen, cell_height, cell_width, margin):
-    def draw_wall(row, column, color):
-        pygame.draw.rect(screen, color,
+    def draw_wall(row, column, colour):
+        pygame.draw.rect(screen, colour,
                          [margin + cell_width * column,
                           margin + cell_height * row,
                           cell_width, cell_height])
-    def draw_void(row, column, color):
-        draw_wall(row, column, color)
+    def draw_void(row, column, colour):
+        draw_wall(row, column, colour)
 
-    def draw_finish(row, column, color):
-        draw_wall(row, column, color)
+    def draw_finish(row, column, colour):
+        draw_wall(row, column, colour)
 
-    def draw_player(row, column, color):
+    def draw_player(row, column, colour):
         pygame.draw.rect(screen, white,
                          [margin + cell_width * column,
                           margin + cell_height * row,
                           cell_width, cell_height])
-        pygame.draw.circle(screen, color, [margin + cell_width * column + cell_width // 2,
+        pygame.draw.circle(screen, colour, [margin + cell_width * column + cell_width // 2,
                                            margin + cell_height * row + cell_height // 2], cell_height//2)
         pygame.draw.circle(screen, yellow, [margin + cell_width * column + cell_width // 2,
                                            margin + cell_height * row + cell_height // 2], cell_height // 4)
@@ -215,40 +188,30 @@ def draw_maze(maze, screen, cell_height, cell_width, margin):
     # for row in range(34):
     for row in range(len(maze)):
         for column in range(len(maze[row])):
-            # set colors for the elements:
-            # wall
-            if maze[row][column] == 1:
-                color = camblue
-                draw_wall(row, column, color)
-            # player
-            elif maze[row][column] == 2:
-                color = brown
-                draw_player(row, column, color)
-            # exit
-            elif maze[row][column] == 3:
-                color = neon
-                draw_finish(row, column, color)
-            # coin
-            elif maze[row][column] == 4:
-                color = yellow
-            # player2
-            elif global_mode == 2 and maze[row][column] == 5:
-                #print("printing p2")
-                color = black
-                draw_player(row, column, color)
-            elif maze[row][column] == 6:
-                color = magenta
-                draw_player(row, column, color)
-            #elif global_mode == 7 and maze[row][column] == 6:
-                #color = magenta
-                #draw_player(row, column, color)
-            #elif global_mode == 8 and maze[row][column] == 6:
-                #color = magenta
-                #draw_player(row, column, color)
-            else:
-                # set default color
-                color = white
-                draw_void(row, column, color)
+            # set colours for the elements:
+            if maze[row][column] == 1: # wall
+                colour = camblue
+                draw_wall(row, column, colour)
+            elif global_mode != 8 and maze[row][column] == 2: # player
+                colour = brown
+                draw_player(row, column, colour)
+            elif maze[row][column] == 3: # exit
+                colour = neon
+                draw_finish(row, column, colour)
+            elif maze[row][column] == 4: # coin
+                colour = yellow
+            elif global_mode == 2 and maze[row][column] == 5: # player 2
+                colour = black
+                draw_player(row, column, colour)
+            elif global_mode == 7 and maze[row][column] == 6: # ai player
+                colour = magenta
+                draw_player(row, column, colour)
+            elif global_mode == 8 and maze[row][column] == 6:
+                colour = magenta
+                draw_player(row, column, colour)
+            else: # default colour
+                colour = white
+                draw_void(row, column, colour)
 
 
 def get_maze(gamemap, player, player2, playercomp):
@@ -266,8 +229,9 @@ def get_maze(gamemap, player, player2, playercomp):
         matrix[player2_pos[0]][player2_pos[1]] = 5
         playercomp_pos = encoding[6]
         matrix[playercomp_pos[0]][playercomp_pos[1]] = 6
-    player_pos = encoding[1]
-    matrix[player_pos[0]][player_pos[1]] = 2
+    if global_mode != 8:
+        player_pos = encoding[1]
+        matrix[player_pos[0]][player_pos[1]] = 2
     exit_pos = encoding[3][0]
     matrix[exit_pos[0]][exit_pos[1]] = 3
     for i in range(len(encoding[4])):
@@ -276,13 +240,4 @@ def get_maze(gamemap, player, player2, playercomp):
     for i in range(len(encoding[5])):
         coin = encoding[5][i]
         matrix[coin[0]][coin[1]] = 4
-    for line in matrix:
-        print(line)
-    print("\n")
-    print("\n")
-    print("\n")
-    for line in gamemap.matrix:
-        print(line)
-    for i in range(10):
-        print("\n")
     return matrix

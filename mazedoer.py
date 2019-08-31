@@ -1,7 +1,4 @@
 from math import floor
-from backend import *
-from time import sleep
-import inmaze
 
 def get_nodes(maze):
     nodes = []
@@ -154,24 +151,16 @@ def ai_solve(maze):
         [next_i, next_j] = solution[move+1]
         while i != next_i:
             if i < next_i:
-                #sleep(1)
                 moves_list.append("down")
-                #playercomp.move_down(gamemap)
                 i += 1
             elif i > next_i:
-                #sleep(1)
                 moves_list.append("up")
-                #playercomp.move_up(gamemap)
                 i -= 1
         while j != next_j:
             if j < next_j:
-                #sleep(1)
                 moves_list.append("right")
-                #playercomp.move_right(gamemap)
                 j += 1
             elif j > next_j:
-                #sleep(1)
                 moves_list.append("left")
-                #playercomp.move_left(gamemap)
                 j -= 1
     return moves_list
