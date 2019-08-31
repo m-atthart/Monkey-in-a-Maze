@@ -73,28 +73,6 @@ def start_game(height, width, mode):
     draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
     pygame.display.update()
 
-    if global_mode == 6:
-        done = False
-        while not done:
-            if global_mode == 8:
-                solution = mazedoer.ai_solve(maze)
-                for move in solution:
-                    pygame.time.wait(1000)
-                    if move == "right":
-                        playercomp.move_right(gamemap)
-                    elif move == "down":
-                        playercomp.move_down(gamemap)
-                    elif move == "up":
-                        playercomp.move_up(gamemap)
-                    elif move == "left":
-                        playercomp.move_left(gamemap)
-
-                    if gamemap.matrix[-2][-2].isPlayer == True: # if user gets to end
-                        done = True
-
-                    draw_maze(get_maze(gamemap, player, player2, playercomp), screen, cell_height, cell_width, margin)
-                    pygame.display.update()
-
     done = False
     move2 = -1
     solution = mazedoer.ai_solve(maze)
@@ -114,7 +92,7 @@ def start_game(height, width, mode):
             pygame.display.update()
             if move2 < len(solution) - 1:
                 move2 += 1
-            pygame.time.wait(200)
+            pygame.time.wait(20)
             if gamemap.matrix[-2][-2].isPlayer == True: # if user gets to end
                 done = True
         for event in pygame.event.get():  # User did something
