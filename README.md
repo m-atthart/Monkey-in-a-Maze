@@ -17,3 +17,19 @@ Don't Stop Mode = Stop moving for 2 seconds results in automatic loss
 ---------------------------------------------------------------------------------------
 
 Controls:
+
+Run startgame.py
+
+Press one of the following modes:
+
+Easy: 1
+Medium: 2
+Hard: 3
+Two Player: 8
+Watch AI: 0
+
+Player 1:
+Arrow Keys
+
+Player 2:
+WASD
