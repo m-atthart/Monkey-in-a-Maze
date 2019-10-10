@@ -10,7 +10,7 @@ width=0
 distance=0
 
 #-------------------------------------------------------------------------------------------------------------------------------------
-
+##MAZE GENERATION##
 
 #Firstly, generate the maze! (from mazegen.py)
 # implementation of Kruskal's maze generation algorithm
@@ -44,9 +44,8 @@ def init_maze(height, width):
                     maze[num1][num2] = 0
             if num1 % 2 == 1:
                 maze[num1][num2] = 0
-    #For debug: Print empty initiated matrix
     if DEBUG_FLAG:
-        print('matrix init:')
+        print('initiated matrix:')
         printmaze(maze)
     return maze
 
@@ -115,7 +114,7 @@ def iterate(maze, height, width):
 
     # (random_i, random_j) are now = coordinates of the wall under consideration
 
-    # check if the wall has already been opened
+    # check if the wall has already been opened, pass if not a wall
     if maze[random_i][random_j] == 0:
         # check if the two cells on vertical are in the same group
         if direction == 0: # down
@@ -156,7 +155,7 @@ def generate_maze(height, width):
         print("GENERATE_MAZE DEBUG:")
         printmaze(maze)
 
-    # normalise (walls = 0)
+    # set (walls = 0)
     for i in range(len(maze)):
         for j in range(len(maze[0])):
             if maze[i][j] > 0:
@@ -164,7 +163,7 @@ def generate_maze(height, width):
             else:
                 maze[i][j] = 1
 
-
+    #Find the last part of the maze, then add a wall to the end.
     for i in range(len(maze)):
         last_value = maze[i][-1]
         for j in range(len(maze[i])):
